@@ -6,7 +6,7 @@ export const api = {
     article: {
         create: `${baseurl}/article/create`,
         display: `${baseurl}/article/displayarticle`,
-        displaysingle: (id) => `${baseurl}/article/displayarticle/${id}`,
+        displaysingle: (id) => `${baseurl}/article/display/${id}`,
         delete: (id) => `${baseurl}/article/deletearticle/${id}`,
         update: (id) => `${baseurl}/article/updatearticle/${id}`
     },
@@ -35,11 +35,7 @@ export const api = {
         countrydetect: `${baseurl}/`,
     },
     visitcount: {
-        visitcount: `${baseurl}/visit`,
-        visitcountget: `${baseurl}/visit`,
-    },
-    userfeling: {
-        like: `${baseurl}/user/like`,
-
+        visitcount: `${baseurl}/visit/visitor`,
+        visitcountget: `${baseurl}/visit/visitorget`,
     }
 }

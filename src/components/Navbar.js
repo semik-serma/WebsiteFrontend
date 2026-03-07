@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,12 +20,12 @@ export default function Navbar() {
   const [nepalTime, setNepalTime] = useState("");
   const [visitorTime, setVisitorTime] = useState("");
   const countrydetect=async()=>{
-  const response =await axios.get("/api/country")
+  const response =await axios.get("/apicountry/country")
   console.log(response)
   setflagurl(response.data.data)
 }
 
-  // Handle scroll effect
+// Handle scroll effect
   useEffect(() => {
     countrydetect()
     const handleScroll = () => {
@@ -128,6 +127,7 @@ export default function Navbar() {
         { href: "/", label: "Home" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact" },
+        {href:"/calculator",label:"Calculator"}
       ];
 
   const isActive = (href) => pathname === href;
@@ -137,7 +137,7 @@ export default function Navbar() {
       {/* Top Bar */}
       <div className="sticky top-0 w-full z-50 px-[200px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 h-12 flex items-center justify-between shadow-lg border-b-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden">    
         <div className="flex items-center gap-4 relative z-10">
-          <Image src={`https://flagcdn.com/${flagurl}.svg`} height={40} width={40} alt="coutry image"></Image>
+          <Image src={`https://flagcdn.com/${flagurl}.svg`} height={20} width={25} alt="image"/>
           <span className="text-xs sm:text-sm font-semibold text-gray-800 hidden sm:inline-block">
             Welcome for visiting my website
           </span>

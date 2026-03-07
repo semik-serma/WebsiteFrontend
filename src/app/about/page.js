@@ -2,9 +2,23 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import Footer from "@/components/Footer";
+import { useEffect, useState } from "react";
 
 export default function About() {
+  const [isloggedin,setIsLoggedIn]=useState(false)
+  const getout=()=>{}
+useEffect(()=>{
+  const user=localStorage.getItem('user')
+  const token=localStorage.getItem('token')
+  if(!token||!user){
+    setIsLoggedIn(false)
+  }
+  else{
+    setIsLoggedIn(true)
+  }
+},[])
+    
+
   const skills = [
     { name: "React", level: 90 },
     { name: "Next.js", level: 85 },
@@ -222,7 +236,10 @@ export default function About() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      {isloggedin?(
+        <></>
+      ):(
+        <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Let's Work Together
@@ -246,6 +263,9 @@ export default function About() {
           </div>
         </div>
       </section>
+      )
+      
+}
     </div>
   );
 }

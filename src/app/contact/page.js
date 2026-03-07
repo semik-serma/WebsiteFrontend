@@ -7,6 +7,17 @@ import { api } from "@/lib/api";
 import { toast } from "sonner";
 
 export default function Contact() {
+  const [isloggedin,setIsLoggedIn]=useState('')
+  useEffect(()=>{
+    const user=localStorage.getItem('user')
+    const token=localStorage.getItem('token')
+    if(!user||!token){
+      setIsLoggedIn(false)
+    }
+    else{
+      setIsLoggedIn(true)
+    }
+  })
   const [name,setname]=useState('')
   const [sub,setssub]=useState('')
   const [message,setmessage]=useState('')
@@ -244,6 +255,7 @@ export default function Contact() {
       </section>
 
       {/* Testimonials Section */}
+    
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -258,7 +270,7 @@ export default function Contact() {
                   JS
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">John Smith</h4>
+                  <h4 className="font-semibold text-gray-900">raj khadka</h4>
                   <div className="flex text-yellow-400">
                     {'★'.repeat(5)}
                   </div>
@@ -273,7 +285,7 @@ export default function Contact() {
                   MS
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Maria Garcia</h4>
+                  <h4 className="font-semibold text-gray-900">Ram </h4>
                   <div className="flex text-yellow-400">
                     {'★'.repeat(5)}
                   </div>
@@ -288,7 +300,7 @@ export default function Contact() {
                   RT
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Robert Taylor</h4>
+                  <h4 className="font-semibold text-gray-900">Anjali</h4>
                   <div className="flex text-yellow-400">
                     {'★'.repeat(5)}
                   </div>
@@ -301,7 +313,9 @@ export default function Contact() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-blue-700">
+      {isloggedin?(
+        <></>
+      ):(<section className="py-16 bg-gradient-to-r from-blue-600 to-blue-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to start your project?</h3>
@@ -316,7 +330,9 @@ export default function Contact() {
             </Link>
           </div>
         </div>
-      </section>
+      </section>)
+      
+      }
     </div>
   );
 }

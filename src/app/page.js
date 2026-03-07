@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useActionState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { MessageCircle, Send, User, Heart, Share2, Eye, ThumbsUp, ThumbsDown } from "lucide-react";
@@ -19,7 +19,20 @@ export default function Home() {
   const router = useRouter();
   const [data, setData] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [signin,setsignin]=useState(false)
+  const commentscroll=useRef(null)
 
+
+  const checksignin=async()=>{
+    const user=localStorage.getItem('user')
+    const token=localStorage.getItem('token')
+    if(!user||!token){
+      setsignin(false)
+    }
+    else{
+      setsignin(true)
+    }
+  }
   const backendcall = async () => {
     try {
       setLoading(true);
@@ -36,6 +49,16 @@ export default function Home() {
       setLoading(false);
     }
   };
+  const commentscrolls=()=>{
+    commentscroll.current.scrollIntoView({
+      behaviour:"smooth",
+      block:"center"
+    })
+  }
+  const getout=()=>{
+    backendcall()
+    commentscrolls()
+  }
 
   const visitorcountpost = async () => {
     try {
@@ -216,14 +239,23 @@ export default function Home() {
                 I create modern websites using Django, Next.js and other technologies. I love creating websites.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link
+                {isloggedin?(
+                  <Link href='/create-article' className="flex justify-center items-center border-2 border-slate-100 p-5 rounded-[5px] bg-blue-600 px-10">Continue</Link>
+                ):(
+                  <Link
                   href="/about"
                   className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold text-center hover:bg-blue-50 transition duration-200 shadow-lg"
                 >
                   Get Started
                 </Link>
+                )
+                
+}
                 <div className="flex gap-4">
                   <div className="flex gap-4 items-center">
+                  {isloggedin?(
+                    <div></div>
+                  ):(
                     <Link
                       href="/login"
                       className="bg-transparent border-2 border-white text-white px-6 py-4 rounded-lg font-semibold hover:bg-white/10 transition duration-200 flex items-center justify-center gap-2"
@@ -231,6 +263,9 @@ export default function Home() {
                       <User className="h-5 w-5" />
                       Sign In
                     </Link>
+                  )
+                    
+}
                   </div>
 
                   <button
@@ -352,8 +387,9 @@ export default function Home() {
 
       {/* Comment Section */}
       <div
+      className="h-110 mt-0 overflow-hidden"
         style={{
-          Height: "10px",
+          Height: "0",
           background: "linear-gradient(135deg, #0f172a, #020617)",
           padding: "40px",
           display: "flex",
@@ -363,18 +399,7 @@ export default function Home() {
         }}
       >
         <div style={{ width: "100%", maxWidth: "720px" }}>
-          <h1
-            style={{
-              fontSize: "28px",
-              fontWeight: "800",
-              marginBottom: "20px",
-              background: "linear-gradient(90deg, #6366f1, #ec4899)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }}
-          >
-            Add your ideas here
-          </h1>
+
 
           <div
             style={{
@@ -430,7 +455,7 @@ export default function Home() {
                 transition: "all 0.2s ease",
                 opacity: submitting || !comment.trim() ? 0.7 : 1
               }}
-            >
+            > 
               {submitting ? (
                 <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
               ) : (
@@ -439,69 +464,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "30px"
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  background: "linear-gradient(135deg, #6366f1, #ec4899)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontWeight: "800",
-                  fontSize: "20px",
-                  boxShadow: "0 10px 30px rgba(99,102,241,0.4)"
-                }}
-              >
-                💬
-              </div>
-
-              <h2 style={{ fontSize: "24px", margin: 0 }}>
-                Comments ({commentCount})
-              </h2>
-            </div>
-
-            <button
-              onClick={backendcall}
-              disabled={loading}
-              style={{
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                color: loading ? "rgba(255,255,255,0.5)" : "#e5e7eb",
-                cursor: loading ? "not-allowed" : "pointer",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                transition: "all 0.2s ease"
-              }}
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
-                  Loading...
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" />
-                  </svg>
-                  Refresh
-                </>
-              )}
-            </button>
-          </div>
+ 
 
           {loading ? (
             <div style={{
@@ -512,8 +475,9 @@ export default function Home() {
             }}>
               Loading comments...
             </div>
-          ) : data.length > 0 ? (
-            data.slice(0, 1).map((item, idx) => (
+          ) :  
+            data.length > 0 ? (
+            data.slice(0,1).map((item, idx) => (
               <div
                 key={item._id || idx}
                 style={{
@@ -538,7 +502,9 @@ export default function Home() {
                     background: "linear-gradient(#6366f1, #ec4899)"
                   }}
                 />
-
+              <h2 style={{ fontSize: "24px", margin: 0 }}>
+                Comments 
+              </h2> 
                 <p
                   style={{
                     color: "#e5e7eb",
@@ -556,7 +522,7 @@ export default function Home() {
 
                 <Link
                   href={`/comment/${item._id}?type=before`}
-                  className="text-blue-400 hover:text-blue-300 text-sm font-medium mb-4  inline-block"
+                  className="text-blue-400 hover:text-blue-300 h-[30px] p-2 mr-[20px] text-sm font-medium mb-4 mr-[20px]"
                 >
                   Read More
                 </Link>
@@ -693,8 +659,12 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+{isloggedin?(
+      
+      
+        <div></div>
+      ):(
+        <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-700 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Get Started?
@@ -716,9 +686,15 @@ export default function Home() {
               Contact Me
             </Link>
           </div>
+      
+        
         </div>
+      
+      
+        
       </section>
-
+  )
+}
       <div className="fixed bottom-5 right-5 z-50">
         <button
           onClick={openWhatsApp}
