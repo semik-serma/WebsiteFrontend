@@ -1,5 +1,5 @@
 
-const baseurl = 'http://localhost:2000'
+const baseurl = 'eljeenalawati.com.np'
 // const baseurl = 'https://backend-zdzm.onrender.com'
 
 export const api = {
