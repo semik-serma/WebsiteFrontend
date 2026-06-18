@@ -37,7 +37,6 @@ export default function ArticleDetailPage() {
     }, [id]);
 
     useEffect(() => {
-        // Scroll to comments when new comment is added
         if (commentsEndRef.current && !commentLoading && comments.length > 0) {
             setTimeout(() => {
                 commentsEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -46,7 +45,7 @@ export default function ArticleDetailPage() {
     }, [comments.length, commentLoading]);
 
     useEffect(() => {
-        // Check comment heights after comments load
+       
         if (comments.length > 0 && !commentLoading) {
             setTimeout(() => {
                 const newHeights = {};
@@ -54,7 +53,7 @@ export default function ArticleDetailPage() {
                     const commentId = comment._id || `comment-${index}`;
                     const element = commentRefs.current[commentId];
                     if (element) {
-                        // Calculate line count based on line-height (assuming 1.5rem = 24px)
+                    
                         const lineHeight = 24; // px
                         const elementHeight = element.scrollHeight;
                         const lineCount = elementHeight / lineHeight;

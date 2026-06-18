@@ -6,10 +6,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { FaGithub, FaYoutube, FaFacebook, FaLinkedin, FaWhatsappSquare } from "react-icons/fa";
 import axios from 'axios'
 import Countvisitor from "./Countvisitor";
+import { api } from "@/lib/api";
+import NotificationDropdown from "./NotificationDropdown";
+import Heartbeat from "./Heartbeat";
 import { toast } from "sonner";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [search, setSearch] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
@@ -19,10 +23,15 @@ export default function Navbar() {
   const [country,setcountry]=useState('')
   const [nepalTime, setNepalTime] = useState("");
   const [visitorTime, setVisitorTime] = useState("");
+  const [token, setToken] = useState('');
   const countrydetect=async()=>{
-  const response =await axios.get("/apicountry/country")
-  console.log(response)
-  setflagurl(response.data.data)
+  try {
+    const response = await axios.get(api.countrydetect.countrydetect)
+    setflagurl(response.data.code?.toLowerCase())
+    setcountry(response.data.country)
+  } catch (err) {
+    console.log("Country detection unavailable")
+  }
 }
 
 // Handle scroll effect
@@ -66,8 +75,17 @@ export default function Navbar() {
   // Check auth status
   useEffect(() => {
     const checkAuth = () => {
-      const token = localStorage.getItem("token");
-      setIsLoggedIn(!!token);
+      const t = localStorage.getItem("token");
+      setIsLoggedIn(!!t);
+      setToken(t || '');
+      if (t) {
+        try {
+          const payload = JSON.parse(atob(t.split('.')[1]));
+          setIsAdmin(payload.role === 'ADMIN');
+        } catch { setIsAdmin(false); }
+      } else {
+        setIsAdmin(false);
+      }
     };
 
     checkAuth();
@@ -121,19 +139,28 @@ export default function Navbar() {
     ? [
         { href: "/dashboard", label: "Dashboard" },
         { href: "/create-article", label: "Create Article" },
-        { href: "/update-article/id", label: "Update Article" },
+        { href: "/update-article", label: "Update Article" },
+        { href: "/reels", label: "Reels" },
       ]
     : [
         { href: "/", label: "Home" },
         { href: "/about", label: "About" },
         { href: "/contact", label: "Contact" },
-        {href:"/calculator",label:"Calculator"}
+        {href:"/calculator",label:"Calculator"},
+        {href:"/reels",label:"Reels"}
       ];
 
-  const isActive = (href) => pathname === href;
+
+  const isActive = (href) => {
+    if (href === '/') return pathname === href;
+    if (href.startsWith('/update-article')) return pathname.startsWith('/update-article');
+    if (href === '/reels') return pathname === '/reels' || pathname.startsWith('/reels/');
+    return pathname === href || pathname.startsWith(href + '/');
+  };
 
   return (
     <>
+      <Heartbeat token={token} />
       {/* Top Bar */}
       <div className="sticky top-0 w-full z-50 px-[200px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 h-12 flex items-center justify-between shadow-lg border-b-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden">    
         <div className="flex items-center gap-4 relative z-10">
@@ -241,7 +268,34 @@ export default function Navbar() {
                 </Link>
               ))}
             </nav>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${pathname.startsWith('/admin') ? 'text-blue-600 bg-blue-50' : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'}`}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Admin
+              </Link>
+            )}
             <div className="flex items-center gap-6">
+              {/* Notifications + Friends/Chat (Desktop) */}
+              {isLoggedIn && (
+                <div className="hidden md:flex items-center gap-1">
+                  <NotificationDropdown />
+                  <Link href="/friends" className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Friends">
+                    <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </Link>
+                  <Link href="/chat" className="p-2 hover:bg-white/10 rounded-full transition-colors" title="Messages">
+                    <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </Link>
+                </div>
+              )}
               {/* Auth Buttons - Desktop */}
               <div className="hidden md:flex items-center gap-4">
                 {!isLoggedIn ? (
@@ -304,6 +358,35 @@ export default function Navbar() {
                 </Link>
               ))}
 
+              {/* Mobile Admin */}
+              {isAdmin && (
+                <Link href="/admin" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-3 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-lg text-base font-medium">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Admin Panel
+                </Link>
+              )}
+              {/* Mobile Notifications + Friends/Chat */}
+              {isLoggedIn && (
+                <div className="px-4 py-3 border-t border-gray-200 pt-4 mt-2">
+                  <div className="flex items-center gap-3">
+                    <NotificationDropdown />
+                    <Link href="/friends" onClick={() => setOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-blue-600 text-sm font-medium">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      Friends
+                    </Link>
+                    <Link href="/chat" onClick={() => setOpen(false)} className="flex items-center gap-2 text-gray-700 hover:text-blue-600 text-sm font-medium">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      Messages
+                    </Link>
+                  </div>
+                </div>
+              )}
               {/* Mobile Auth Buttons */}
               <div className="px-4 py-2 space-y-2 border-t border-gray-200 pt-4 mt-2">
                 {!isLoggedIn ? (

@@ -10,8 +10,8 @@ export default function Home() {
           <h1 className="text-5xl font-bold mb-3">Semik</h1>
           <p className="text-xl mb-5 opacity-90">Student Developer | Class 7 | Mechi English School</p>
           <div className="flex justify-center gap-8 flex-wrap">
-            <a href="mailto:semik@example.com" className="hover:opacity-70 transition">
-              📧 semik@example.com
+            <a href="mailto:semikserma@gmail.com" className="hover:opacity-70 transition">
+              📧 semikserma@gmail.com
             </a>
             <a href="https://github.com/semik" target="_blank" className="hover:opacity-70 transition">
               💻 GitHub

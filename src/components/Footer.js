@@ -45,6 +45,7 @@ export default function Footer() {
                   <li><Link href="/contact">Contact</Link></li>
                 </>
               )}
+              <li><Link href="/reels">Reels</Link></li>
             </ul>
           </div>
 

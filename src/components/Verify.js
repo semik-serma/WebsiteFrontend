@@ -42,15 +42,20 @@ export default function VerifyPage() {
 
     const handlePaste = (e) => {
         e.preventDefault();
-        const paste = e.clipboardData.getData('text');
+        const paste = e.clipboardData.getData('text').trim();
         const pasteDigits = paste.replace(/\D/g, '').split('').slice(0, 6);
 
-        if (pasteDigits.length === 6) {
-            setOtp(pasteDigits);
-            // Focus the last input after pasting
+        if (pasteDigits.length > 0) {
+            const newOtp = [...otp];
+            pasteDigits.forEach((digit, i) => {
+                newOtp[i] = digit;
+            });
+            setOtp(newOtp);
+            // Focus next empty box or last filled box
+            const nextIndex = Math.min(pasteDigits.length, 5);
             setTimeout(() => {
-                if (inputRefs.current[5]) {
-                    inputRefs.current[5].focus();
+                if (inputRefs.current[nextIndex]) {
+                    inputRefs.current[nextIndex].focus();
                 }
             }, 10);
         }
