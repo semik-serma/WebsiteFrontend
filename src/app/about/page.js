@@ -207,11 +207,11 @@ export default function About() {
               className="bg-white rounded-2xl shadow-md p-6 md:p-10"
             >
               <div className="text-gray-700 text-base sm:text-lg leading-relaxed space-y-4">
-                <p>I am studying in class 7.</p>
+                <p>I am studying in class 8.</p>
                 <p>In the morning and in the evening after the homework and in the holidays, I learn full stack website development. This website I made it.</p>
                 <p>If you give me a documentation, I can also make this website for you: portfolio website, news website, e-commerce website, official website, organization website, etc.</p>
                 <p>I will use MongoDB database for now. My main goal is SaaS product application and Android OS, mac OS, etc.</p>
-                <p>I am trying to learn all of that.</p>
+                <p>I am trying to learn all of that.I am currently Studying at Phidim 4, Gadi Phidim Mavhi School.</p>
               </div>
             </motion.div>
           </motion.div>
