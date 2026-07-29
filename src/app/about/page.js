@@ -65,7 +65,7 @@ export default function About() {
     const user = localStorage.getItem("user");
     return !!(token && user);
   });
-  const getout = () => {};
+  const getout = () => { };
 
   const skills = [
     { name: "React", level: 90 },

@@ -719,9 +719,9 @@ export default function Home() {
             className="mb-8"
           >
             <Star className="w-12 h-12 text-yellow-400 mx-auto mb-6" />
-              <blockquote className="text-2xl md:text-3xl font-light text-white/90 leading-relaxed mb-8">
-                &ldquo;The only way to do great work is to love what you do. Every line of code I write is a step toward building something meaningful.&rdquo;
-              </blockquote>
+            <blockquote className="text-2xl md:text-3xl font-light text-white/90 leading-relaxed mb-8">
+              &ldquo;The only way to do great work is to love what you do. Every line of code I write is a step toward building something meaningful.&rdquo;
+            </blockquote>
             <div className="w-16 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 mx-auto mb-6" />
             <p className="text-lg font-semibold text-cyan-300">— Semik</p>
             <p className="text-sm text-blue-200/60">Web Developer</p>

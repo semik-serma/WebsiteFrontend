@@ -19,22 +19,22 @@ export default function Navbar() {
   const [showAnimation, setShowAnimation] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const [flagurl,setflagurl]=useState('')
-  const [country,setcountry]=useState('')
+  const [flagurl, setflagurl] = useState('')
+  const [country, setcountry] = useState('')
   const [nepalTime, setNepalTime] = useState("");
   const [visitorTime, setVisitorTime] = useState("");
   const [token, setToken] = useState('');
-  const countrydetect=async()=>{
-  try {
-    const response = await axios.get(api.countrydetect.countrydetect)
-    setflagurl(response.data.code?.toLowerCase())
-    setcountry(response.data.country)
-  } catch (err) {
-    console.log("Country detection unavailable")
+  const countrydetect = async () => {
+    try {
+      const response = await axios.get(api.countrydetect.countrydetect)
+      setflagurl(response.data.code?.toLowerCase())
+      setcountry(response.data.country)
+    } catch (err) {
+      console.log("Country detection unavailable")
+    }
   }
-}
 
-// Handle scroll effect
+  // Handle scroll effect
   useEffect(() => {
     countrydetect()
     const handleScroll = () => {
@@ -131,24 +131,24 @@ export default function Navbar() {
     }
   };
 
-  const isDashboardArea = pathname.startsWith("/dashboard") || 
-                          pathname.startsWith("/create-article") || 
-                          pathname.startsWith("/update-article");
+  const isDashboardArea = pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/create-article") ||
+    pathname.startsWith("/update-article");
 
   const navLinks = (isLoggedIn && isDashboardArea)
     ? [
-        { href: "/dashboard", label: "Dashboard" },
-        { href: "/create-article", label: "Create Article" },
-        { href: "/update-article", label: "Update Article" },
-        { href: "/reels", label: "Reels" },
-      ]
+      { href: "/dashboard", label: "Dashboard" },
+      { href: "/create-article", label: "Create Article" },
+      { href: "/update-article", label: "Update Article" },
+      { href: "/reels", label: "Reels" },
+    ]
     : [
-        { href: "/", label: "Home" },
-        { href: "/about", label: "About" },
-        { href: "/contact", label: "Contact" },
-        {href:"/calculator",label:"Calculator"},
-        {href:"/reels",label:"Reels"}
-      ];
+      { href: "/", label: "Home" },
+      { href: "/about", label: "About" },
+      { href: "/contact", label: "Contact" },
+      { href: "/calculator", label: "Calculator" },
+      { href: "/reels", label: "Reels" }
+    ];
 
 
   const isActive = (href) => {
@@ -162,9 +162,9 @@ export default function Navbar() {
     <>
       <Heartbeat token={token} />
       {/* Top Bar */}
-      <div className="sticky top-0 w-full z-50 px-[200px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 h-12 flex items-center justify-between shadow-lg border-b-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden">    
+      <div className="sticky top-0 w-full z-50 px-[200px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 h-12 flex items-center justify-between shadow-lg border-b-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden">
         <div className="flex items-center gap-4 relative z-10">
-          <Image src={`https://flagcdn.com/${flagurl}.svg`} height={20} width={25} alt="image"/>
+          <Image src={`https://flagcdn.com/${flagurl}.svg`} height={20} width={25} alt="image" />
           <span className="text-xs sm:text-sm font-semibold text-gray-800 hidden sm:inline-block">
             Welcome for visiting my website
           </span>
@@ -407,7 +407,7 @@ export default function Navbar() {
                     </Link>
                   </>
                 ) : (
-                  <button 
+                  <button
                     onClick={() => {
                       handlelogout();
                       setOpen(false);

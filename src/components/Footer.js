@@ -56,17 +56,17 @@ export default function Footer() {
               {isLoggedIn ? (
                 <li>
                   <button
-  onClick={() => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+                    onClick={() => {
+                      localStorage.removeItem("token");
+                      localStorage.removeItem("user");
 
-    window.dispatchEvent(new Event("storage")); // 🔥 refresh UI
-    window.location.href = "/login";
-  }}
-  className="text-red-400 hover:text-red-500"
->
-  Logout
-</button>
+                      window.dispatchEvent(new Event("storage")); // 🔥 refresh UI
+                      window.location.href = "/login";
+                    }}
+                    className="text-red-400 hover:text-red-500"
+                  >
+                    Logout
+                  </button>
 
                 </li>
               ) : (
