@@ -1,6 +1,5 @@
 
-const baseurl = 'http://localhost:2000'
-// const baseurl = 'https://backend-zdzm.onrender.com'
+const baseurl = process.env.NEXT_PUBLIC_API_URL || "https://semik.phidimservice.com.np"
 
 export const api = {
     article: {
