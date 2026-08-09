@@ -119,16 +119,6 @@ export default function About() {
 
         {/* Centered Quantum Hero Content */}
         <div className="relative z-30 max-w-5xl mx-auto text-center space-y-6">
-          
-          {/* Top Pill Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wider text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-5 py-2 rounded-full shadow-lg shadow-cyan-500/20 backdrop-blur-md"
-          >
-            <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" /> Precision. Speed. Intelligence.
-          </motion.div>
 
           {/* Glowing Quantum Title */}
           <motion.h1
