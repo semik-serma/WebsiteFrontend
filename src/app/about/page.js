@@ -95,32 +95,28 @@ export default function About() {
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
 
-      {/* QUANTUM HERO SECTION WITH USER'S BACKGROUND IMAGE */}
+      {/* HERO SECTION WITH USER'S PLANET ARC IMAGE (aboutpagebg.png) */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
         
-        {/* Background Image: aboutpagebg.png */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-          <Image
-            src="/aboutpagebg.png"
-            alt="About Page Background"
-            fill
-            className="object-cover object-center opacity-40 scale-105"
-            priority
-          />
-          {/* Subtle Dark Gradient Overlay for perfect readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/50 to-slate-950" />
-          <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" />
+        {/* Planet Horizon Image: aboutpagebg.png */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
+          <div className="relative w-full h-full max-w-7xl">
+            <Image
+              src="/aboutpagebg.png"
+              alt="Planet Horizon"
+              fill
+              className="object-contain object-center scale-110 sm:scale-105"
+              priority
+            />
+          </div>
+          {/* Subtle Top & Bottom Gradient Fades */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60" />
         </div>
 
-        {/* Ambient Deep Space Nebulae Lighting */}
-        <div className="absolute inset-0 pointer-events-none opacity-30 z-10">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[400px] bg-cyan-600 rounded-full blur-[180px]" />
-          <div className="absolute top-1/3 left-1/4 w-[400px] h-[300px] bg-purple-700 rounded-full blur-[180px]" />
-          <div className="absolute bottom-10 right-1/4 w-[400px] h-[300px] bg-blue-700 rounded-full blur-[180px]" />
+        {/* Ambient Cyan Lighting */}
+        <div className="absolute inset-0 pointer-events-none opacity-20 z-10">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-cyan-600 rounded-full blur-[180px]" />
         </div>
-
-        {/* Massive Quantum Curved Horizon Dome Arc */}
-        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] lg:w-[1450px] h-[360px] sm:h-[550px] lg:h-[720px] rounded-t-full border-t-2 border-cyan-400/80 bg-gradient-to-b from-blue-950/30 via-slate-950/70 to-slate-950 shadow-[0_-30px_140px_rgba(34,211,238,0.5)] pointer-events-none z-10" />
 
         {/* Centered Quantum Hero Content */}
         <div className="relative z-30 max-w-5xl mx-auto text-center space-y-6">
@@ -212,7 +208,7 @@ export default function About() {
               </div>
             </motion.div>
 
-            {/* Feature Stat Cards (Replacing photos) */}
+            {/* Feature Stat Cards */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
