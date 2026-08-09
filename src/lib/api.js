@@ -1,6 +1,8 @@
 
-const baseurl = process.env.NEXT_PUBLIC_API_URL || "https://semik.phidimservice.com.np".replace(/\/+$/, "");
-
+const baseurl = (
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://semik.phidimservice.com.np"
+).replace(/\/+$/, "");
 export const api = {
     article: {
         create: `${baseurl}/article/create`,

@@ -25,6 +25,7 @@ const [email, setEmail] = useState("");
       email,
       password,
     });
+    console.log(api.auth.login)
 
     const token = response.data.data.token;
     const user = response.data.data.data;

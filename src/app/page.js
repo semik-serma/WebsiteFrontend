@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { MessageCircle, Send, User, Heart, Share2, Eye, ThumbsUp, ThumbsDown, Code2, Palette, Zap, Smartphone, Shield, RefreshCw, Star, ChevronRight, Mail, MapPin, Award, Briefcase, Users, Clock, Download } from "lucide-react";
+import { MessageCircle, Send, User, Heart, Share2, Eye, ThumbsUp, ThumbsDown, Code2, Palette, Zap, Smartphone, Shield, RefreshCw, Star, ChevronRight, Mail, MapPin, Award, Briefcase, Users, Clock, Download, Sparkles, ExternalLink, Github, Layers, Monitor, Lightbulb, Search } from "lucide-react";
 import axios from "axios";
 import { api } from "@/lib/api";
 import { FaArrowAltCircleRight } from "react-icons/fa";
@@ -30,12 +30,42 @@ const staggerItem = {
 };
 
 const offers = [
-  { icon: <Code2 className="w-7 h-7" />, title: "Frontend Development", desc: "I create frontend with Next.js, Django and others with 1-2 years of experience.", color: "from-blue-500 to-cyan-500" },
-  { icon: <Palette className="w-7 h-7" />, title: "UI/UX Design", desc: "Beautiful and intuitive user interfaces designed with user experience in mind.", color: "from-purple-500 to-pink-500" },
-  { icon: <Zap className="w-7 h-7" />, title: "Performance", desc: "Optimized applications that load fast and provide smooth user experiences.", color: "from-yellow-500 to-orange-500" },
-  { icon: <Smartphone className="w-7 h-7" />, title: "Responsive Design", desc: "Mobile-first approach ensuring perfect display on all screen sizes.", color: "from-green-500 to-emerald-500" },
-  { icon: <Shield className="w-7 h-7" />, title: "Secure & Reliable", desc: "Built with security best practices and reliable architecture.", color: "from-red-500 to-rose-500" },
-  { icon: <RefreshCw className="w-7 h-7" />, title: "Maintenance & Support", desc: "Ongoing support and maintenance to keep your application running smoothly.", color: "from-indigo-500 to-violet-500" }
+  {
+    icon: <Layers className="w-8 h-8 text-cyan-400" />,
+    title: "UI/UX Design",
+    desc: "Creating clean, intuitive UI/UX designs that improve usability and enhance user engagement.",
+    color: "from-blue-500 to-cyan-500"
+  },
+  {
+    icon: <Smartphone className="w-8 h-8 text-cyan-400" />,
+    title: "Mobile App Design",
+    desc: "Designing seamless, user-friendly mobile apps that deliver engaging and intuitive experiences.",
+    color: "from-cyan-500 to-teal-500"
+  },
+  {
+    icon: <Monitor className="w-8 h-8 text-cyan-400" />,
+    title: "Website Design",
+    desc: "Creating clean, responsive websites that offer intuitive navigation and enhance user experience.",
+    color: "from-blue-500 to-indigo-500"
+  },
+  {
+    icon: <Code2 className="w-8 h-8 text-cyan-400" />,
+    title: "Web Development",
+    desc: "Building fast, reliable websites with clean code that deliver smooth, user-friendly experiences.",
+    color: "from-indigo-500 to-cyan-500"
+  },
+  {
+    icon: <Lightbulb className="w-8 h-8 text-cyan-400" />,
+    title: "Brand Strategy",
+    desc: "Developing clear brand strategies that connect with audiences and drive lasting business growth.",
+    color: "from-cyan-500 to-blue-500"
+  },
+  {
+    icon: <Search className="w-8 h-8 text-cyan-400" />,
+    title: "SEO & Marketing",
+    desc: "Optimizing online presence to boost visibility, attract customers, and grow your business effectively.",
+    color: "from-teal-500 to-cyan-500"
+  }
 ];
 
 const skills = [
@@ -47,6 +77,49 @@ const skills = [
   { name: "Node.js", level: 70, icon: "M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5l7 3.5v7l-7 3.5-7-3.5v-7l7-3.5zM8 9v6h2V9H8zm3 0v6h2l3-4.5V9h-2v6h2l-3-4.5V9h-2zm6 0h-2v6h2V9z", color: "#339933" },
   { name: "MongoDB", level: 65, icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c.55 0 1 .45 1 1v8c0 .55-.45 1-1 1s-1-.45-1-1V6c0-.55.45-1 1-1zm0 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z", color: "#47A248" },
   { name: "Python", level: 72, icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z", color: "#3776AB" }
+];
+
+const projects = [
+  {
+    id: 1,
+    title: "SaaS Analytics & AI Platform",
+    category: "Apps",
+    image: "/projects/saas.png",
+    desc: "Fullstack SaaS application with real-time data visualizers, subscription workflows, and automated reporting.",
+    tags: ["Next.js", "Django", "Tailwind CSS", "Chart.js"],
+    liveUrl: "#",
+    githubUrl: "#"
+  },
+  {
+    id: 2,
+    title: "E-Commerce Tech Store Platform",
+    category: "Websites",
+    image: "/projects/ecommerce.png",
+    desc: "Feature-rich e-commerce store with dynamic cart state, secure payment integration, and custom admin portal.",
+    tags: ["React", "Node.js", "MongoDB", "Tailwind"],
+    liveUrl: "#",
+    githubUrl: "#"
+  },
+  {
+    id: 3,
+    title: "Mobile App Experience Showcase",
+    category: "UI/UX",
+    image: "/projects/mobile.png",
+    desc: "Interactive mobile user interface showcase featuring glassmorphic screens, smooth gestures, and micro-interactions.",
+    tags: ["UI/UX", "Figma", "React Native", "Framer Motion"],
+    liveUrl: "#",
+    githubUrl: "#"
+  },
+  {
+    id: 4,
+    title: "Agency & Developer Portfolio",
+    category: "Websites",
+    image: "/projects/agency.png",
+    desc: "Ultra-modern portfolio website built with Next.js, 3D card glows, interactive filters, and custom animations.",
+    tags: ["Next.js", "Framer Motion", "Tailwind", "CSS3"],
+    liveUrl: "#",
+    githubUrl: "#"
+  }
 ];
 
 function formatNumber(num) {
@@ -98,6 +171,7 @@ export default function Home() {
   const [typedText, setTypedText] = useState("");
   const fullText = "Web Developer & UI Enthusiast";
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
     setHeroLoaded(true);
@@ -234,13 +308,16 @@ export default function Home() {
   return (
     <div className="min-h-screen overflow-hidden">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full blur-[128px] animate-float-slow" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500 rounded-full blur-[128px] animate-float-delayed" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500 rounded-full blur-[200px] opacity-10 animate-pulse" />
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900">
+        {/* Ambient Background Glows */}
+        <div className="absolute inset-0 pointer-events-none opacity-30">
+          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500 rounded-full blur-[140px] animate-float-slow" />
+          <div className="absolute bottom-20 right-10 w-[500px] h-[500px] bg-purple-500 rounded-full blur-[160px] animate-float-delayed" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500 rounded-full blur-[200px] opacity-20 animate-pulse" />
         </div>
-        <div className="absolute inset-0">
+
+        {/* Floating background particles */}
+        <div className="absolute inset-0 pointer-events-none">
           {[...Array(20)].map((_, i) => {
             const left = ((i * 37 + 13) % 100);
             const top = ((i * 53 + 7) % 100);
@@ -257,182 +334,336 @@ export default function Home() {
             );
           })}
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -80 }}
-              animate={heroLoaded ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="space-y-8"
-            >
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-sm text-blue-200"
-              >
-                <Award className="w-4 h-4 text-yellow-400" />
-                Available for freelance work
-              </motion.div>
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight">
-                <motion.span
+
+        {/* Main Content Area */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-16 lg:py-20 w-full">
+          
+          {/* Hero Main Content Grid */}
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+            
+            {/* Left Column: Typography & Info */}
+            <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+              
+              {/* Massive Title Block */}
+              <div className="relative">
+                <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.3 }}
-                  className="text-white"
+                  transition={{ duration: 0.6 }}
                 >
-                  Welcome to{" "}
-                </motion.span>
-                <motion.span
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.5 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400"
+                  <h1 className="font-condensed font-black tracking-tight leading-[0.85] uppercase select-none">
+                    <span className="block text-6xl sm:text-8xl md:text-9xl lg:text-[125px] xl:text-[140px] text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-cyan-400 drop-shadow-[0_10px_20px_rgba(34,211,238,0.25)]">
+                      SEMIKDEV
+                    </span>
+                    <span className="block text-6xl sm:text-8xl md:text-9xl lg:text-[125px] xl:text-[140px] text-slate-100 drop-shadow-[0_10px_20px_rgba(255,255,255,0.08)]">
+                      DEVELOPER
+                    </span>
+                  </h1>
+                </motion.div>
+
+                {/* Overlaid Script Cursive "Portfolio" */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, rotate: -8 }}
+                  animate={heroLoaded ? { opacity: 1, scale: 1, rotate: -6 } : {}}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="absolute bottom-[-10px] sm:bottom-[-4px] right-2 sm:right-12 md:right-24 lg:right-10 xl:right-16 pointer-events-none select-none"
                 >
-                  SemikDev
-                </motion.span>
-              </h1>
+                  <span className="font-script text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-cyan-300 drop-shadow-[0_0_18px_rgba(34,211,238,0.8)] block">
+                    Portfolio
+                  </span>
+                </motion.div>
+              </div>
+
+              {/* Tagline & Typed text */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={heroLoaded ? { opacity: 1 } : {}}
-                transition={{ delay: 0.7 }}
-                className="flex items-center gap-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.6 }}
+                className="space-y-3 pt-2"
               >
-                <span className="text-xl md:text-2xl text-blue-100">{typedText}</span>
-                <span className="w-0.5 h-7 bg-cyan-400 animate-blink" />
+                <div className="flex items-center gap-2 text-cyan-200/90 text-sm sm:text-base font-medium">
+                  <span className="text-cyan-400 font-mono">&lt;/&gt;</span>
+                  <span>{typedText}</span>
+                  <span className="w-0.5 h-5 bg-cyan-400 animate-blink" />
+                </div>
+                <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed tracking-wide">
+                  I DESIGN & CODE DIGITAL EXPERIENCES THAT INSPIRE. SPECIALIZING IN NEXT.JS, DJANGO & MODERN FULLSTACK APPLICATIONS.
+                </p>
+                <div className="text-xs font-mono tracking-widest text-cyan-400/80 uppercase pt-1">
+                  &lt;/ CODE. DESIGN. DEPLOY /&gt;
+                </div>
               </motion.div>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.9 }}
-                className="text-lg text-blue-200/80 max-w-2xl leading-relaxed"
-              >
-                I create modern websites using Django, Next.js and other technologies. I love creating websites that make a difference.
-              </motion.p>
+
+              {/* Action Buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 1.1 }}
-                className="flex flex-wrap items-center gap-3"
+                transition={{ delay: 0.8 }}
+                className="flex flex-wrap items-center gap-3 pt-2"
               >
                 {isloggedin ? (
-                  <Link href="/create-article" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-8 py-3.5 rounded-xl font-semibold hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300 hover:scale-105">
+                  <Link href="/create-article" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-7 py-3 rounded-xl font-semibold hover:shadow-lg hover:shadow-cyan-500/30 transition-all duration-300 hover:scale-105 text-sm">
                     Continue <ChevronRight className="w-4 h-4" />
                   </Link>
                 ) : (
                   <>
-                    <Link href="/about" className="inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-3.5 rounded-xl font-semibold hover:shadow-xl hover:shadow-white/20 transition-all duration-300 hover:scale-105">
+                    <Link href="/about" className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 text-white px-7 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/25 transition-all duration-300 hover:scale-105 text-sm">
                       Get Started <ChevronRight className="w-4 h-4" />
                     </Link>
-                    <Link href="/login" className="inline-flex items-center gap-2 bg-transparent border-2 border-white/30 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                      <User className="h-5 w-5" /> Sign In
+                    <Link href="/login" className="inline-flex items-center gap-2 bg-white/5 border border-white/15 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105 text-sm">
+                      <User className="h-4 w-4" /> Sign In
                     </Link>
                   </>
                 )}
-                <button onClick={handleShare} className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-xl font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105" title="Share this website">
-                  <Share2 className="h-5 w-5" /> Share
+                
+                <a href="/cv" download className="inline-flex items-center gap-2 bg-slate-900/90 border border-cyan-500/40 text-cyan-200 px-5 py-3 rounded-xl text-sm font-semibold hover:border-cyan-400 hover:text-white transition-all duration-300 shadow-md">
+                  <Download className="w-4 h-4 text-cyan-400" /> Download CV
+                </a>
+
+                <button onClick={() => window.open("https://wa.me/9779862772457?text=Hey%20I%20visited%20your%20website", "_blank")} className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-3 rounded-xl text-sm font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-105">
+                  💬 Hire Me
                 </button>
-                <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 text-white px-6 py-3.5 rounded-xl font-semibold" title="Total page views">
-                  <Eye className="h-5 w-5" /> {formatNumber(visitorCount)} Views
+
+                <button onClick={handleShare} className="inline-flex items-center gap-2 bg-white/5 border border-white/15 text-white px-4 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 text-sm" title="Share website">
+                  <Share2 className="h-4 w-4" />
+                </button>
+
+                <div className="inline-flex items-center gap-1.5 bg-white/5 border border-white/15 text-cyan-200 px-4 py-3 rounded-xl font-semibold text-sm">
+                  <Eye className="h-4 w-4 text-cyan-400" /> {formatNumber(visitorCount)}
                 </div>
               </motion.div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 80 }}
-              animate={heroLoaded ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="hidden lg:block"
-            >
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-[120px] opacity-40 blur-xl group-hover:opacity-70 transition duration-500 animate-spin-slow" />
-                <div className="relative h-100 w-full bg-slate-800/50 backdrop-blur-sm rounded-[100px] overflow-hidden border border-white/10">
-                  <Image src="/home.png" alt="Home" fill className="object-cover" priority />
-                </div>
+
+            </div>
+
+            {/* Right Column: Image Presentation with Glowing Aura & Orbit Sweep */}
+            <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center items-center">
+              
+              {/* Outer Background Powder Glow */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/30 via-blue-500/25 to-indigo-600/20 rounded-full blur-[70px] transform scale-110" />
+
+              {/* Main Portrait Frame with Orbit lines */}
+              <div className="relative w-full max-w-sm sm:max-w-md aspect-[4/5] rounded-[36px] overflow-hidden border border-cyan-500/40 shadow-2xl bg-slate-900/60 backdrop-blur-sm group">
+                
+                {/* User's Portrait Image */}
+                <Image
+                  src="/home.png"
+                  alt="SemikDev"
+                  fill
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  priority
+                />
+
+                {/* Smooth Gradient Mask Overlay at Bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80" />
+
               </div>
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 1.3 }}
-                className="flex items-center gap-8 mt-10 pl-[160px]"
-              >
-                <motion.div whileHover={{ scale: 1.1 }} className="flex justify-center items-center">
-                  <a href="/cv" download className="relative group inline-flex items-center gap-2 bg-slate-900 px-5 py-2 rounded-xl text-sm font-semibold text-cyan-300 border border-cyan-400/50 shadow-[0_0_15px_rgba(34,211,238,0.3)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] transition-all duration-300">
-                    <Download className="w-4 h-4" /> Download CV
-                  </a>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.1 }}>
-                  <button onClick={() => window.open("https://wa.me/1234567890", "_blank")} className="relative group inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-5 py-2 rounded-xl text-sm font-semibold text-white shadow-[0_0_15px_rgba(236,72,153,0.4)] hover:shadow-[0_0_25px_rgba(236,72,153,0.7)] transition-all duration-300">
-                    💬 Hire
-                  </button>
-                </motion.div>
-              </motion.div>
-            </motion.div>
+
+            </div>
+
           </div>
+
+          {/* Integrated Stats Bar at Bottom of Hero */}
+          <div className="pt-10 mt-12 border-t border-white/10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { end: 4, label: "YEARS EXPERIENCE", suffix: "+" },
+                { end: 40, label: "PROJECTS DELIVERED", suffix: "+" },
+                { end: 25, label: "HAPPY CLIENTS", suffix: "+" },
+                { end: 10, label: "TECHNOLOGIES", suffix: "+" }
+              ].map((stat, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={heroLoaded ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 1.0 + i * 0.1 }}
+                  className="text-center sm:text-left group"
+                >
+                  <div className="font-condensed text-4xl sm:text-5xl font-black text-cyan-300 tracking-tight group-hover:scale-105 transition-transform duration-300">
+                    <AnimatedCounter end={stat.end} suffix={stat.suffix} />
+                  </div>
+                  <div className="text-[11px] sm:text-xs font-semibold tracking-wider text-slate-400 uppercase mt-1">
+                    {stat.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </section>
 
-      {/* Stats Section */}
-      <motion.section {...fadeInUp} className="py-16 bg-white border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { icon: <Briefcase className="w-6 h-6" />, end: 15, label: "Projects Completed", suffix: "+" },
-              { icon: <Users className="w-6 h-6" />, end: 30, label: "Happy Clients", suffix: "+" },
-              { icon: <Clock className="w-6 h-6" />, end: 2, label: "Years Experience", suffix: "+" },
-              { icon: <MessageCircle className="w-6 h-6" />, end: commentCount || 50, label: "Comments", suffix: "+" }
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center group"
-              >
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-cyan-50 text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {stat.icon}
-                </div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-800 mb-1">
-                  <AnimatedCounter end={stat.end} suffix={stat.suffix} />
-                </div>
-                <div className="text-sm text-gray-500">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
+      {/* Services / My Specialties Section */}
+      <section className="py-24 relative overflow-hidden bg-slate-950 text-white border-t border-slate-800/60">
+        {/* Ambient Glows */}
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-10 right-1/4 w-96 h-96 bg-blue-600 rounded-full blur-[160px]" />
+          <div className="absolute bottom-10 left-1/4 w-96 h-96 bg-cyan-600 rounded-full blur-[160px]" />
         </div>
-      </motion.section>
 
-      {/* What I Offer */}
-      <motion.section {...fadeInUp} className="py-24 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeInUp} className="text-center mb-16">
-            <span className="inline-block text-sm font-semibold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full mb-4">Services</span>
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-800 mb-4">
-              What I <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Offer</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Header */}
+          <motion.div {...fadeInUp} className="text-center mb-16 space-y-3">
+            <span className="inline-block text-xs font-extrabold tracking-[0.25em] text-cyan-400 uppercase">
+              SERVICES
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+              My Specialties
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Professional web development services tailored to your needs
-            </p>
+            <div className="w-12 h-1 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mx-auto mt-3" />
           </motion.div>
-          <motion.div {...staggerContainer} className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+          {/* 2x3 Grid */}
+          <motion.div {...staggerContainer} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {offers.map((offer, i) => (
               <motion.div
                 key={i}
                 variants={staggerItem}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                whileHover={{ y: -6, transition: { duration: 0.3 } }}
+                className="group relative bg-slate-900/60 border border-slate-800/80 p-8 rounded-3xl backdrop-blur-sm shadow-xl hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col justify-between"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${offer.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br ${offer.color} text-white mb-5 group-hover:scale-110 transition-transform duration-300`}>
-                  {offer.icon}
+                <div>
+                  <div className="mb-6 inline-flex items-center justify-center p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/20 group-hover:border-cyan-400/50 group-hover:scale-110 transition-all duration-300">
+                    {offer.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-cyan-300 transition-colors duration-300">
+                    {offer.title}
+                  </h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">
+                    {offer.desc}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3 group-hover:text-blue-600 transition-colors duration-300">{offer.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{offer.desc}</p>
               </motion.div>
             ))}
           </motion.div>
+
         </div>
-      </motion.section>
+      </section>
+
+      {/* My Recent Works (Projects) Section */}
+      <section className="py-24 relative overflow-hidden bg-slate-950 text-white border-t border-slate-800/60">
+        {/* Subtle Ambient Background Lighting */}
+        <div className="absolute inset-0 pointer-events-none opacity-20">
+          <div className="absolute top-1/4 left-10 w-96 h-96 bg-blue-600 rounded-full blur-[160px]" />
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-cyan-600 rounded-full blur-[160px]" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Section Header */}
+          <motion.div {...fadeInUp} className="text-center mb-12">
+            <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full mb-4 uppercase">
+              Portfolio
+            </span>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tight mb-4">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-200 to-cyan-400">My Recent </span>
+              <span className="text-white">Works</span>
+            </h2>
+            <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Explore some of my featured web applications, fullstack solutions, and digital experiences.
+            </p>
+
+            {/* Category Filter Tabs */}
+            <div className="flex flex-wrap justify-center items-center gap-2 mt-8">
+              {["All", "Apps", "Websites", "UI/UX"].map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                    activeCategory === category
+                      ? "bg-gradient-to-r from-blue-600 to-cyan-500 text-white shadow-lg shadow-cyan-500/30 scale-105"
+                      : "bg-slate-900/80 border border-slate-800 text-slate-400 hover:text-white hover:border-cyan-500/40"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* 2x2 Project Cards Grid */}
+          <motion.div layout className="grid md:grid-cols-2 gap-8 lg:gap-10">
+            <AnimatePresence mode="popLayout">
+              {projects
+                .filter((p) => activeCategory === "All" || p.category === activeCategory)
+                .map((project) => (
+                  <motion.div
+                    key={project.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
+                    className="group relative bg-slate-900/70 border border-slate-800/80 rounded-3xl overflow-hidden shadow-xl hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 flex flex-col"
+                  >
+                    {/* Project Image Frame */}
+                    <div className="relative w-full aspect-[16/10] overflow-hidden bg-slate-950">
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover object-top group-hover:scale-105 transition-transform duration-700"
+                      />
+                      
+                      {/* Dark Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
+
+                      {/* Glass Hover Overlay Action Buttons */}
+                      <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center gap-4 backdrop-blur-xs">
+                        <a
+                          href={project.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-cyan-500/30 hover:scale-105 transition-all duration-200"
+                        >
+                          <ExternalLink className="w-4 h-4" /> Live Demo
+                        </a>
+                        <a
+                          href={project.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 bg-slate-900 border border-white/20 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:scale-105 transition-all duration-200"
+                        >
+                          <Github className="w-4 h-4" /> Code
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Card Information Footer */}
+                    <div className="p-6 sm:p-8 space-y-3 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between gap-2 mb-3">
+                          <span className="text-xs font-bold tracking-wider text-cyan-300 bg-cyan-950/80 border border-cyan-500/30 px-3 py-1 rounded-full uppercase">
+                            {project.category}
+                          </span>
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors duration-300">
+                          {project.title}
+                        </h3>
+                        <p className="text-slate-400 text-sm leading-relaxed mt-2 line-clamp-2">
+                          {project.desc}
+                        </p>
+                      </div>
+
+                      {/* Tech Stack Tags */}
+                      <div className="flex flex-wrap gap-2 pt-4 border-t border-white/10">
+                        {project.tags.map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className="text-xs font-medium text-slate-300 bg-slate-800/80 border border-slate-700/60 px-2.5 py-1 rounded-lg"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+            </AnimatePresence>
+          </motion.div>
+
+        </div>
+      </section>
 
       {/* Skills Section */}
       <motion.section {...fadeInUp} className="py-24 bg-white">
