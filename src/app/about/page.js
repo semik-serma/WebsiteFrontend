@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowUpRight, Code2, Palette, Smartphone, Zap, Shield, Target, Cpu, Layers, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowUpRight, Code2, Zap, Shield, Target, Cpu, Layers, CheckCircle2, Award, Terminal, Rocket } from "lucide-react";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -89,59 +89,38 @@ export default function About() {
     { icon: <Cpu className="w-7 h-7 text-cyan-400" />, title: "Creative Problem Solving", desc: "Translating complex ideas into intuitive user experiences with high visual excellence." },
     { icon: <Shield className="w-7 h-7 text-cyan-400" />, title: "Secure & Scalable", desc: "Designing backend APIs and authentication with robust security best practices." },
     { icon: <Layers className="w-7 h-7 text-cyan-400" />, title: "Fast Delivery", desc: "Efficient workflow ensuring prompt project completion without sacrificing code quality." },
-    { icon: <Smartphone className="w-7 h-7 text-cyan-400" />, title: "Fully Responsive", desc: "Seamless layout adaptation across desktop, tablet, and mobile displays." },
+    { icon: <Code2 className="w-7 h-7 text-cyan-400" />, title: "Fully Responsive", desc: "Seamless layout adaptation across desktop, tablet, and mobile displays." },
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
 
-      {/* QUANTUM HERO HORIZON DOME SECTION */}
+      {/* QUANTUM HERO SECTION WITH USER'S BACKGROUND IMAGE */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
         
+        {/* Background Image: aboutpagebg.png */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          <Image
+            src="/aboutpagebg.png"
+            alt="About Page Background"
+            fill
+            className="object-cover object-center opacity-40 scale-105"
+            priority
+          />
+          {/* Subtle Dark Gradient Overlay for perfect readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/50 to-slate-950" />
+          <div className="absolute inset-0 bg-slate-950/30 backdrop-blur-[2px]" />
+        </div>
+
         {/* Ambient Deep Space Nebulae Lighting */}
-        <div className="absolute inset-0 pointer-events-none opacity-30">
+        <div className="absolute inset-0 pointer-events-none opacity-30 z-10">
           <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[400px] bg-cyan-600 rounded-full blur-[180px]" />
           <div className="absolute top-1/3 left-1/4 w-[400px] h-[300px] bg-purple-700 rounded-full blur-[180px]" />
           <div className="absolute bottom-10 right-1/4 w-[400px] h-[300px] bg-blue-700 rounded-full blur-[180px]" />
         </div>
 
-        {/* Ambient Stardust Particles */}
-        <div className="absolute inset-0 pointer-events-none z-10">
-          {[...Array(24)].map((_, i) => {
-            const left = ((i * 37 + 13) % 100);
-            const top = ((i * 53 + 7) % 100);
-            return (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-cyan-300 rounded-full shadow-[0_0_8px_#38BDF8]"
-                style={{ left: `${left}%`, top: `${top}%` }}
-                animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2], scale: [0.8, 1.3, 0.8] }}
-                transition={{ duration: 4 + ((i * 7) % 4), repeat: Infinity, delay: ((i * 13) % 30) / 10 }}
-              />
-            );
-          })}
-        </div>
-
         {/* Massive Quantum Curved Horizon Dome Arc */}
-        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] lg:w-[1450px] h-[360px] sm:h-[550px] lg:h-[720px] rounded-t-full border-t-2 border-cyan-400/80 bg-gradient-to-b from-blue-950/40 via-slate-950/80 to-slate-950 shadow-[0_-30px_140px_rgba(34,211,238,0.5)] pointer-events-none z-10" />
-
-        {/* Floating Left 3D Cosmic Gem */}
-        <motion.div
-          animate={{ y: [0, -18, 0], rotate: [0, 6, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute left-4 sm:left-12 lg:left-24 top-[38%] w-24 sm:w-36 md:w-48 aspect-square pointer-events-none opacity-85 z-20"
-        >
-          <Image src="/about/crystal_left.png" alt="Cosmic Gem" fill className="object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.6)]" />
-        </motion.div>
-
-        {/* Floating Right 3D Cosmic Gem */}
-        <motion.div
-          animate={{ y: [0, 18, 0], rotate: [0, -6, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute right-4 sm:right-12 lg:right-24 top-[38%] w-24 sm:w-36 md:w-48 aspect-square pointer-events-none opacity-85 z-20"
-        >
-          <Image src="/about/crystal_right.png" alt="Cosmic Gem" fill className="object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]" />
-        </motion.div>
+        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] lg:w-[1450px] h-[360px] sm:h-[550px] lg:h-[720px] rounded-t-full border-t-2 border-cyan-400/80 bg-gradient-to-b from-blue-950/30 via-slate-950/70 to-slate-950 shadow-[0_-30px_140px_rgba(34,211,238,0.5)] pointer-events-none z-10" />
 
         {/* Centered Quantum Hero Content */}
         <div className="relative z-30 max-w-5xl mx-auto text-center space-y-6">
@@ -207,10 +186,10 @@ export default function About() {
       {/* WHO I AM SECTION */}
       <motion.section {...fadeInUp} className="py-24 relative bg-slate-950 border-t border-slate-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
             
-            {/* Left Story Text */}
-            <motion.div {...fadeInUp} className="space-y-6">
+            {/* Story Text */}
+            <motion.div {...fadeInUp} className="lg:col-span-7 space-y-6">
               <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase">
                 Who I Am
               </span>
@@ -233,24 +212,32 @@ export default function About() {
               </div>
             </motion.div>
 
-            {/* Right Picture Showcase */}
+            {/* Feature Stat Cards (Replacing photos) */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="relative group"
+              className="lg:col-span-5 grid sm:grid-cols-2 gap-4"
             >
-              <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/30 via-blue-600/30 to-purple-600/30 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-2xl pointer-events-none" />
-              <div className="relative h-80 sm:h-96 md:h-[450px] bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-                <Image src="/mypicture.png" alt="Semik - Web Developer" fill className="object-cover object-top group-hover:scale-105 transition-transform duration-700" priority />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 z-10">
-                  <div className="bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-cyan-500/30 shadow-xl">
-                    <p className="text-xl font-bold text-white">Fullstack Developer</p>
-                    <p className="text-xs text-slate-300 mt-1">Building modern web applications with Next.js, Django & MongoDB.</p>
-                  </div>
-                </div>
+              <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md">
+                <Terminal className="w-8 h-8 text-cyan-400 mb-3" />
+                <h3 className="text-3xl font-extrabold text-white font-condensed tracking-wider">4+ YEARS</h3>
+                <p className="text-xs font-semibold text-slate-400 uppercase mt-1">Coding Experience</p>
+              </div>
+
+              <div className="bg-slate-900/80 border border-blue-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md">
+                <Rocket className="w-8 h-8 text-blue-400 mb-3" />
+                <h3 className="text-3xl font-extrabold text-white font-condensed tracking-wider">40+ PROJECTS</h3>
+                <p className="text-xs font-semibold text-slate-400 uppercase mt-1">Delivered Worldwide</p>
+              </div>
+
+              <div className="bg-slate-900/80 border border-teal-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md sm:col-span-2">
+                <Award className="w-8 h-8 text-teal-400 mb-3" />
+                <h3 className="text-xl font-bold text-white">Fullstack Engineering</h3>
+                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                  Building SaaS platforms, custom enterprise web portals, interactive media apps, and responsive digital solutions.
+                </p>
               </div>
             </motion.div>
 
