@@ -98,19 +98,18 @@ export default function About() {
       {/* HERO SECTION WITH USER'S PLANET ARC IMAGE (aboutpagebg.png) */}
       <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
         
-        {/* Planet Horizon Image: aboutpagebg.png */}
-        <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
-          <div className="relative w-full h-full max-w-7xl">
-            <Image
-              src="/aboutpagebg.png"
-              alt="Planet Horizon"
-              fill
-              className="object-contain object-center scale-110 sm:scale-105"
-              priority
-            />
-          </div>
-          {/* Subtle Top & Bottom Gradient Fades */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/60" />
+        {/* Full Cover Background Image: aboutpagebg.png */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <Image
+            src="/aboutpagebg.png"
+            alt="About Page Background"
+            fill
+            className="object-cover object-center w-full h-full opacity-70"
+            priority
+          />
+          {/* Smooth Dark Gradient Overlays for contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950" />
+          <div className="absolute inset-0 bg-slate-950/20" />
         </div>
 
         {/* Ambient Cyan Lighting */}
