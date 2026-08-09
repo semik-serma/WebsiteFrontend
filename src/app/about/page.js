@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Sparkles, ArrowUpRight, Code2, Palette, Smartphone, Zap, Shield, Target, Cpu, Layers, CheckCircle2 } from "lucide-react";
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 50 },
+  initial: { opacity: 0, y: 40 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
+  viewport: { once: true, margin: "-60px" },
   transition: { duration: 0.6 }
 };
 
@@ -19,7 +20,7 @@ const staggerContainer = {
 };
 
 const staggerItem = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 25 },
   whileInView: { opacity: 1, y: 0 },
   transition: { duration: 0.5 }
 };
@@ -27,31 +28,31 @@ const staggerItem = {
 function SkillBar({ name, level, delay }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: -30 }}
+      initial={{ opacity: 0, x: -20 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-white p-5 sm:p-6 rounded-xl shadow-md"
+      className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl backdrop-blur-sm"
     >
       <div className="flex justify-between items-center mb-2">
-        <span className="text-base sm:text-lg font-semibold text-gray-800">{name}</span>
+        <span className="text-base font-semibold text-slate-200">{name}</span>
         <motion.span
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 0.3 }}
-          className="text-xs sm:text-sm font-medium text-blue-600"
+          className="text-xs font-bold text-cyan-400"
         >
           {level}%
         </motion.span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3 overflow-hidden">
+      <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: delay + 0.2, ease: "easeOut" }}
-          className="bg-gradient-to-r from-blue-600 to-cyan-500 h-full rounded-full"
+          className="bg-gradient-to-r from-blue-600 via-cyan-400 to-teal-300 h-full rounded-full shadow-sm shadow-cyan-500/50"
         />
       </div>
     </motion.div>
@@ -59,280 +60,360 @@ function SkillBar({ name, level, delay }) {
 }
 
 export default function About() {
-  const [isloggedin, setIsLoggedIn] = useState(() => {
+  const [isloggedin] = useState(() => {
     if (typeof window === 'undefined') return false;
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
     return !!(token && user);
   });
-  const getout = () => { };
 
   const skills = [
-    { name: "React", level: 90 },
-    { name: "Next.js", level: 85 },
-    { name: "JavaScript", level: 95 },
-    { name: "TypeScript", level: 80 },
+    { name: "JavaScript / ES6+", level: 95 },
+    { name: "React / Next.js", level: 90 },
     { name: "Tailwind CSS", level: 90 },
-    { name: "Node.js", level: 75 },
+    { name: "Python / Django", level: 80 },
+    { name: "Node.js & APIs", level: 75 },
+    { name: "MongoDB / Databases", level: 75 },
   ];
 
   const technologies = [
-    { name: "Frontend", items: ["React", "Next.js", "Vue.js", "HTML5", "CSS3", "Tailwind CSS", "JavaScript", "TypeScript"] },
-    { name: "Backend", items: ["Node.js", "Express", "REST APIs", "GraphQL"] },
-    { name: "Tools", items: ["Git", "GitHub", "VS Code", "Figma", "Webpack", "Vite"] },
-    { name: "Others", items: ["Responsive Design", "SEO", "Performance Optimization", "Testing"] },
+    { name: "Frontend", items: ["Next.js (App Router)", "React.js", "Tailwind CSS", "HTML5 & CSS3", "JavaScript", "Framer Motion"] },
+    { name: "Backend", items: ["Node.js", "Express.js", "Django", "REST APIs", "MongoDB", "Auth & JWT"] },
+    { name: "Tools", items: ["Git & GitHub", "VS Code", "Vercel", "Figma", "Postman", "npm / Yarn"] },
+    { name: "Specialties", items: ["Responsive UI", "SEO Best Practices", "Performance Optimization", "Clean Architecture"] },
   ];
 
   const whyChoose = [
-    { icon: "🎯", title: "Focus on Quality", desc: "I prioritize clean code, best practices, and attention to detail in every project I work on." },
-    { icon: "🚀", title: "Modern Technologies", desc: "I stay up-to-date with the latest web technologies and frameworks to deliver cutting-edge solutions." },
-    { icon: "💡", title: "Creative Solutions", desc: "I approach each project with creativity and innovation to solve problems in unique ways." },
-    { icon: "🤝", title: "Client-Focused", desc: "Your success is my priority. I work closely with clients to understand their vision and deliver beyond expectations." },
-    { icon: "⚡", title: "Fast & Efficient", desc: "I deliver projects on time without compromising quality, ensuring you get results quickly." },
-    { icon: "📱", title: "Responsive Design", desc: "Every website I build is fully responsive and works perfectly on all devices and screen sizes." },
+    { icon: <Target className="w-7 h-7 text-cyan-400" />, title: "Focus on Quality", desc: "Prioritizing clean code structure, modern standards, and smooth responsive design in every project." },
+    { icon: <Zap className="w-7 h-7 text-cyan-400" />, title: "Modern Tech Stack", desc: "Building applications using Next.js 16, React, Django, and Tailwind CSS for max performance." },
+    { icon: <Cpu className="w-7 h-7 text-cyan-400" />, title: "Creative Problem Solving", desc: "Translating complex ideas into intuitive user experiences with high visual excellence." },
+    { icon: <Shield className="w-7 h-7 text-cyan-400" />, title: "Secure & Scalable", desc: "Designing backend APIs and authentication with robust security best practices." },
+    { icon: <Layers className="w-7 h-7 text-cyan-400" />, title: "Fast Delivery", desc: "Efficient workflow ensuring prompt project completion without sacrificing code quality." },
+    { icon: <Smartphone className="w-7 h-7 text-cyan-400" />, title: "Fully Responsive", desc: "Seamless layout adaptation across desktop, tablet, and mobile displays." },
   ];
 
   return (
-    <div className="min-h-screen overflow-hidden">
-      <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-20 lg:py-28 overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-blue-500 rounded-full blur-[128px] animate-float-slow" />
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-purple-500 rounded-full blur-[128px] animate-float-delayed" />
+    <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
+
+      {/* QUANTUM HERO HORIZON DOME SECTION */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
+        
+        {/* Ambient Deep Space Nebulae Lighting */}
+        <div className="absolute inset-0 pointer-events-none opacity-30">
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[400px] bg-cyan-600 rounded-full blur-[180px]" />
+          <div className="absolute top-1/3 left-1/4 w-[400px] h-[300px] bg-purple-700 rounded-full blur-[180px]" />
+          <div className="absolute bottom-10 right-1/4 w-[400px] h-[300px] bg-blue-700 rounded-full blur-[180px]" />
         </div>
-        <div className="absolute inset-0">
-          {[...Array(15)].map((_, i) => {
+
+        {/* Ambient Stardust Particles */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          {[...Array(24)].map((_, i) => {
             const left = ((i * 37 + 13) % 100);
             const top = ((i * 53 + 7) % 100);
             return (
               <motion.div
                 key={i}
-                className="absolute w-1 h-1 bg-white/20 rounded-full"
+                className="absolute w-1 h-1 bg-cyan-300 rounded-full shadow-[0_0_8px_#38BDF8]"
                 style={{ left: `${left}%`, top: `${top}%` }}
-                animate={{ y: [0, -25, 0], opacity: [0.2, 0.7, 0.2] }}
-                transition={{ duration: 3 + ((i * 7) % 4), repeat: Infinity, delay: ((i * 13) % 30) / 10 }}
+                animate={{ y: [0, -30, 0], opacity: [0.2, 0.8, 0.2], scale: [0.8, 1.3, 0.8] }}
+                transition={{ duration: 4 + ((i * 7) % 4), repeat: Infinity, delay: ((i * 13) % 30) / 10 }}
               />
             );
           })}
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+        {/* Massive Quantum Curved Horizon Dome Arc */}
+        <div className="absolute top-[48%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] lg:w-[1450px] h-[360px] sm:h-[550px] lg:h-[720px] rounded-t-full border-t-2 border-cyan-400/80 bg-gradient-to-b from-blue-950/40 via-slate-950/80 to-slate-950 shadow-[0_-30px_140px_rgba(34,211,238,0.5)] pointer-events-none z-10" />
+
+        {/* Floating Left 3D Cosmic Gem */}
+        <motion.div
+          animate={{ y: [0, -18, 0], rotate: [0, 6, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute left-4 sm:left-12 lg:left-24 top-[38%] w-24 sm:w-36 md:w-48 aspect-square pointer-events-none opacity-85 z-20"
+        >
+          <Image src="/about/crystal_left.png" alt="Cosmic Gem" fill className="object-contain drop-shadow-[0_0_30px_rgba(168,85,247,0.6)]" />
+        </motion.div>
+
+        {/* Floating Right 3D Cosmic Gem */}
+        <motion.div
+          animate={{ y: [0, 18, 0], rotate: [0, -6, 0] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute right-4 sm:right-12 lg:right-24 top-[38%] w-24 sm:w-36 md:w-48 aspect-square pointer-events-none opacity-85 z-20"
+        >
+          <Image src="/about/crystal_right.png" alt="Cosmic Gem" fill className="object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.6)]" />
+        </motion.div>
+
+        {/* Centered Quantum Hero Content */}
+        <div className="relative z-30 max-w-5xl mx-auto text-center space-y-6">
+          
+          {/* Top Pill Badge */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center space-y-4"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold tracking-wider text-cyan-300 bg-cyan-950/80 border border-cyan-500/40 px-5 py-2 rounded-full shadow-lg shadow-cyan-500/20 backdrop-blur-md"
           >
-            <motion.span
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, type: "spring" }}
-              className="inline-block text-sm font-semibold text-cyan-300 bg-white/10 px-4 py-1.5 rounded-full border border-white/20"
-            >
-              About Me
-            </motion.span>
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
-            >
-              About <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Semik</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-lg sm:text-xl md:text-2xl text-blue-100/80 max-w-3xl mx-auto px-4"
-            >
-              Passionate web developer dedicated to creating exceptional digital experiences
-            </motion.p>
+            <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" /> Precision. Speed. Intelligence.
           </motion.div>
+
+          {/* Glowing Quantum Title */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.7 }}
+            className="font-condensed text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black tracking-widest leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-blue-300 drop-shadow-[0_0_40px_rgba(34,211,238,0.5)]"
+          >
+            SEMIKDEV
+          </motion.h1>
+
+          {/* Subheadline Tagline */}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="text-base sm:text-xl md:text-2xl font-bold tracking-[0.3em] uppercase text-cyan-200/90"
+          >
+            STOP GUESSING — START SCALING
+          </motion.h2>
+
+          {/* Sub-description */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-4"
+          >
+            Crafting high-performance web applications, modern interactive interfaces, and intelligent digital infrastructure.
+          </motion.p>
+
+          {/* Action CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="pt-4"
+          >
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 hover:from-blue-500 hover:to-cyan-400 text-white font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-2xl shadow-xl shadow-cyan-500/30 hover:scale-105 transition-all duration-300 group"
+            >
+              Get In Touch <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </Link>
+          </motion.div>
+
         </div>
       </section>
 
-      <motion.section {...fadeInUp} className="py-16 bg-white">
+      {/* WHO I AM SECTION */}
+      <motion.section {...fadeInUp} className="py-24 relative bg-slate-950 border-t border-slate-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-            <motion.div {...fadeInUp} className="order-2 lg:order-1">
-              <span className="inline-block text-sm font-semibold text-blue-600 bg-blue-50 px-4 py-1.5 rounded-full mb-4">Who I Am</span>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-6">
-                Hi, I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">Semik-serma</span>
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Story Text */}
+            <motion.div {...fadeInUp} className="space-y-6">
+              <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase">
+                Who I Am
+              </span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+                Hi, I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Semik Serma</span>
               </h2>
-              <div className="space-y-4 text-base sm:text-lg text-gray-600 leading-relaxed">
-                <p>I am a passionate developer with a love for creating beautiful, functional, and user-friendly websites.</p>
-                <p>I want to be successful in my life. I have to learn at least 10 programming languages and become a global person for the entire world.</p>
-                <p>I am currently doing Next.js and in the previous year I have done HTML, CSS, JavaScript, Python, and Django.</p>
-                <p>When I&apos;m not coding, I do physical exercises like running, jumping, throwing, and pushups.</p>
+              <div className="space-y-4 text-slate-300 text-base leading-relaxed">
+                <p>
+                  I am a passionate web developer dedicated to creating intuitive, high-performance, and visually striking web applications.
+                </p>
+                <p>
+                  My goal is to push the boundaries of digital engineering, master core technologies, and deliver impactful solutions globally.
+                </p>
+                <p>
+                  I specialize in modern fullstack development using <strong className="text-cyan-300">Next.js</strong>, <strong className="text-cyan-300">React</strong>, <strong className="text-cyan-300">JavaScript</strong>, <strong className="text-cyan-300">Python</strong>, and <strong className="text-cyan-300">Django</strong>.
+                </p>
+                <p>
+                  Outside of coding, I stay physically disciplined with regular fitness routines including running, pushups, and athletic exercises.
+                </p>
               </div>
             </motion.div>
+
+            {/* Right Picture Showcase */}
             <motion.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="order-1 lg:order-2"
+              className="relative group"
             >
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-br from-blue-100 via-cyan-100 to-blue-200 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-xl" />
-                <div className="relative h-64 sm:h-80 md:h-96 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl overflow-hidden shadow-xl">
-                  <Image src="/mypicture.png" alt="Semik - Web Developer" fill className="object-cover" priority />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="absolute bottom-4 sm:bottom-6 left-4 right-4 text-white z-10"
-                  >
-                    <div className="bg-white/20 backdrop-blur-md rounded-xl p-4 border border-white/20">
-                      <p className="text-xl sm:text-2xl font-semibold">Web Developer</p>
-                      <p className="text-sm text-white/80">Building websites with Django, Next.js and others.</p>
-                    </div>
-                  </motion.div>
+              <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/30 via-blue-600/30 to-purple-600/30 rounded-3xl opacity-60 group-hover:opacity-100 transition-opacity duration-500 blur-2xl pointer-events-none" />
+              <div className="relative h-80 sm:h-96 md:h-[450px] bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+                <Image src="/mypicture.png" alt="Semik - Web Developer" fill className="object-cover object-top group-hover:scale-105 transition-transform duration-700" priority />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                <div className="absolute bottom-6 left-6 right-6 z-10">
+                  <div className="bg-slate-900/80 backdrop-blur-md p-5 rounded-2xl border border-cyan-500/30 shadow-xl">
+                    <p className="text-xl font-bold text-white">Fullstack Developer</p>
+                    <p className="text-xs text-slate-300 mt-1">Building modern web applications with Next.js, Django & MongoDB.</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
+
           </div>
         </div>
       </motion.section>
 
-      <motion.section {...fadeInUp} className="py-16 bg-gray-50">
+      {/* HOW I LEARNED TO CODE */}
+      <motion.section {...fadeInUp} className="py-20 bg-slate-900/60 border-t border-slate-800/60 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeInUp} className="max-w-4xl mx-auto mb-12">
-            <h3 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 text-center lg:text-left">
-              How I learned to make websites
-            </h3>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-white rounded-2xl shadow-md p-6 md:p-10"
-            >
-              <div className="text-gray-700 text-base sm:text-lg leading-relaxed space-y-4">
-                <p>I am studying in class 8.</p>
-                <p>In the morning and in the evening after the homework and in the holidays, I learn full stack website development. This website I made it.</p>
-                <p>If you give me a documentation, I can also make this website for you: portfolio website, news website, e-commerce website, official website, organization website, etc.</p>
-                <p>I will use MongoDB database for now. My main goal is SaaS product application and Android OS, mac OS, etc.</p>
-                <p>I am trying to learn all of that.I am currently Studying at Phidim 4, Gadi Phidim Mavhi School.</p>
+          <motion.div {...fadeInUp} className="max-w-4xl mx-auto">
+            <div className="text-center mb-10">
+              <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+                Journey
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
+                How I Learned To Build Websites
+              </h2>
+            </div>
+            
+            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-md space-y-5 text-slate-300 text-base leading-relaxed">
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <p>Currently studying in class 8 at Phidim 4, Gadi Phidim Mavhi School.</p>
               </div>
-            </motion.div>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <p>In the mornings, evenings, and holidays, I dedicate focused hours to mastering fullstack web development.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <p>Given project requirements or designs, I craft tailored web applications: portfolio platforms, news portals, e-commerce stores, and official organization websites.</p>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <p>My primary focus spans SaaS product applications, database architecture with MongoDB, and expanding into cross-platform software environments.</p>
+              </div>
+            </div>
           </motion.div>
+        </div>
+      </motion.section>
 
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <span className="inline-block text-sm font-semibold text-purple-600 bg-purple-50 px-4 py-1.5 rounded-full mb-4">Skills</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-3">
-              My <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">Skills</span>
+      {/* SKILLS SECTION */}
+      <motion.section {...fadeInUp} className="py-24 bg-slate-950 border-t border-slate-800/60">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          <motion.div {...fadeInUp} className="text-center mb-14">
+            <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+              Capabilities
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white">
+              My Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Skills</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              Technologies and tools I work with to bring ideas to life
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-2">
+              Technologies and tools I leverage to engineer robust web solutions
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
+          <div className="grid md:grid-cols-2 gap-6 mb-12">
             {skills.map((skill, index) => (
               <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={index * 0.1} />
             ))}
           </div>
 
-          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10">
+          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {technologies.map((category, index) => (
               <motion.div
                 key={index}
                 variants={staggerItem}
-                whileHover={{ y: -5 }}
-                className="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+                whileHover={{ y: -6 }}
+                className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl backdrop-blur-sm shadow-xl hover:border-cyan-500/40 transition-all duration-300"
               >
-                <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">{category.name}</h3>
-                <ul className="space-y-1 sm:space-y-2">
+                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-cyan-400 rounded-full" />
+                  {category.name}
+                </h3>
+                <ul className="space-y-2">
                   {category.items.map((item, itemIndex) => (
-                    <motion.li
-                      key={itemIndex}
-                      initial={{ opacity: 0, x: -10 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: itemIndex * 0.05 }}
-                      className="text-sm sm:text-base text-gray-600 flex items-center"
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-600 rounded-full mr-2"></span>
+                    <li key={itemIndex} className="text-sm text-slate-300 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                       {item}
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
               </motion.div>
             ))}
           </motion.div>
+
         </div>
       </motion.section>
 
-      <motion.section {...fadeInUp} className="py-16 bg-white">
+      {/* WHY CHOOSE ME SECTION */}
+      <motion.section {...fadeInUp} className="py-24 bg-slate-900/40 border-t border-slate-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <span className="inline-block text-sm font-semibold text-emerald-600 bg-emerald-50 px-4 py-1.5 rounded-full mb-4">Why Me</span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-3">
-              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">Choose Me?</span>
+          
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+              Advantages
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-black text-white">
+              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Choose Me?</span>
             </h2>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-              What sets me apart as a web developer
+            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-2">
+              What sets my web engineering approach apart
             </p>
           </motion.div>
 
-          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <motion.div {...staggerContainer} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {whyChoose.map((item, i) => (
               <motion.div
                 key={i}
                 variants={staggerItem}
                 whileHover={{ y: -6 }}
-                className="group bg-gradient-to-br from-blue-50 to-blue-100 p-6 sm:p-8 rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
+                className="group bg-slate-900/70 border border-slate-800/80 p-8 rounded-3xl backdrop-blur-sm shadow-xl hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300"
               >
-                <motion.div
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  className="text-3xl sm:text-4xl mb-3 sm:mb-4"
-                >
+                <div className="mb-6 inline-flex p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
                   {item.icon}
-                </motion.div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 sm:mb-3 group-hover:text-blue-600 transition-colors">
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
+                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
+
         </div>
       </motion.section>
 
+      {/* LET'S WORK TOGETHER CTA BANNER */}
       {!isloggedin && (
-        <motion.section {...fadeInUp} className="py-16 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-800" />
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-[150px] translate-x-1/2 -translate-y-1/2" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-cyan-400 rounded-full blur-[150px] -translate-x-1/2 translate-y-1/2" />
+        <section className="py-24 relative overflow-hidden bg-slate-950 border-t border-slate-800/60">
+          <div className="absolute inset-0 pointer-events-none opacity-20">
+            <div className="absolute top-10 right-10 w-96 h-96 bg-cyan-600 rounded-full blur-[180px]" />
+            <div className="absolute bottom-10 left-10 w-96 h-96 bg-blue-600 rounded-full blur-[180px]" />
           </div>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Let&apos;s Work Together</h2>
-              <p className="text-lg sm:text-xl text-blue-100/80 mb-8 max-w-2xl mx-auto">
-                Have a project in mind? Let&apos;s discuss how we can bring your ideas to life.
+            <motion.div {...fadeInUp} className="space-y-6">
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+                Let&apos;s Build Something Incredible
+              </h2>
+              <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                Have a project or web application in mind? Let&apos;s turn your vision into a reality.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-2 bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:shadow-xl hover:shadow-white/20 transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-cyan-500/25 hover:scale-105 transition-all duration-300 text-sm"
                 >
-                  Get In Touch
+                  Get In Touch <ArrowUpRight className="w-5 h-5" />
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center gap-2 bg-transparent border-2 border-white/40 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105"
+                  className="inline-flex items-center justify-center gap-2 bg-slate-900 border border-slate-800 text-slate-200 font-bold px-8 py-4 rounded-2xl hover:border-cyan-500/40 hover:bg-slate-850 transition-all duration-300 text-sm"
                 >
                   Start a Project
                 </Link>
               </div>
             </motion.div>
           </div>
-        </motion.section>
+        </section>
       )}
+
     </div>
   );
 }
