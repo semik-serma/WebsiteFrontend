@@ -20,20 +20,46 @@ export default function Navbar() {
   const [showAnimation, setShowAnimation] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const [flagurl, setflagurl] = useState('')
-  const [country, setcountry] = useState('')
+  const [flagurl, setflagurl] = useState('np');
+  const [country, setcountry] = useState('Nepal');
   const [nepalTime, setNepalTime] = useState("");
   const [visitorTime, setVisitorTime] = useState("");
   const [token, setToken] = useState('');
   const countrydetect = async () => {
     try {
-      const response = await axios.get(api.countrydetect.countrydetect)
-      setflagurl(response.data.code?.toLowerCase())
-      setcountry(response.data.country)
+      let data = null;
+      // 1. Try direct client-side lookup (detects user's actual device IP, not server datacenter IP)
+      try {
+        const clientRes = await fetch("https://ipwho.is/", { signal: AbortSignal.timeout(3500) });
+        if (clientRes.ok) {
+          const json = await clientRes.json();
+          if (json && json.success !== false && json.country_code) {
+            data = {
+              code: json.country_code,
+              country: json.country,
+            };
+          }
+        }
+      } catch (e) {
+        // Fall through to backend
+      }
+
+      // 2. Fallback to backend countrydetect endpoint if client-side request was blocked
+      if (!data) {
+        const response = await axios.get(api.countrydetect.countrydetect);
+        if (response.data?.code) {
+          data = response.data;
+        }
+      }
+
+      if (data?.code) {
+        setflagurl(data.code.toLowerCase());
+        setcountry(data.country || "Nepal");
+      }
     } catch (err) {
-      console.log("Country detection unavailable")
+      console.log("Country detection fallback to default");
     }
-  }
+  };
 
   // Handle scroll effect
   useEffect(() => {
@@ -165,7 +191,7 @@ export default function Navbar() {
       {/* Top Bar */}
       <div className="sticky top-0 w-full z-50 px-[200px] bg-gradient-to-r from-yellow-400 via-yellow-400 to-yellow-300 h-12 flex items-center justify-between shadow-lg border-b-2 border-yellow-500/30 backdrop-blur-sm relative overflow-hidden">
         <div className="flex items-center gap-4 relative z-10">
-          <Image src={`https://flagcdn.com/${flagurl}.svg`} height={20} width={25} alt="image" />
+          <Image src={`https://flagcdn.com/${flagurl || 'np'}.svg`} height={20} width={25} alt={country ? `${country} flag` : "flag"} className="rounded-xs shadow-xs object-contain" />
           <span className="text-xs sm:text-sm font-semibold text-gray-800 hidden sm:inline-block">
             Welcome for visiting my website
           </span>
