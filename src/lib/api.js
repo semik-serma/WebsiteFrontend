@@ -82,5 +82,10 @@ export const api = {
         deleteReel: (id) => `${baseurl}/admin/reels/${id}`,
         articles: `${baseurl}/admin/articles`,
         deleteArticle: (id) => `${baseurl}/admin/articles/${id}`,
+        backups: `${baseurl}/admin/backups`,
+        createBackup: `${baseurl}/admin/backups/create`,
+        downloadBackup: (filename) => `${baseurl}/admin/backups/download/${filename}`,
+        restoreBackup: (filename) => `${baseurl}/admin/backups/restore/${filename}`,
+        deleteBackup: (filename) => `${baseurl}/admin/backups/${filename}`,
     },
 }
