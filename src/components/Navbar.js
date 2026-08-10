@@ -9,6 +9,7 @@ import Countvisitor from "./Countvisitor";
 import { api } from "@/lib/api";
 import NotificationDropdown from "./NotificationDropdown";
 import Heartbeat from "./Heartbeat";
+import RopePullAd from "./RopePullAd";
 import { toast } from "sonner";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -213,15 +214,9 @@ export default function Navbar() {
             
             {/* Left Ad + Logo Container */}
             <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-              <a
-                href="https://www.phidimbazar.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden xl:inline-flex items-center text-xs lg:text-sm font-bold text-[#ff007f] hover:text-[#d8006b] hover:underline whitespace-nowrap transition-colors"
-                title="Visit www.phidimbazar.com"
-              >
-                Add www.phidimbazar.com
-              </a>
+              <div className="hidden xl:flex items-center">
+                <RopePullAd />
+              </div>
 
               {/* Logo */}
               {isLoggedIn ? (
@@ -358,10 +353,8 @@ export default function Navbar() {
           <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-gray-200 space-y-2">
               {/* Mobile Ads */}
-              <div className="px-4 py-2.5 bg-pink-50 rounded-xl mx-2 flex flex-col gap-1 text-xs font-bold text-[#ff007f] border border-pink-100">
-                <a href="https://www.phidimbazar.com" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
-                  <span>📢</span> Add www.phidimbazar.com
-                </a>
+              <div className="px-3 py-2 bg-gradient-to-r from-pink-50 via-purple-50 to-pink-50 rounded-xl mx-2 flex items-center justify-center border border-pink-100/80 shadow-sm overflow-hidden">
+                <RopePullAd compact={true} />
               </div>
 
               {/* Mobile Nav Links */}
