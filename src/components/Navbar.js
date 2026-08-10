@@ -214,13 +214,13 @@ export default function Navbar() {
             {/* Left Ad + Logo Container */}
             <div className="flex items-center gap-3 sm:gap-4 shrink-0">
               <a
-                href="https://www.phidimservice.com.np"
+                href="https://www.phidimbazar.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden xl:inline-flex items-center text-xs lg:text-sm font-bold text-[#ff007f] hover:text-[#d8006b] hover:underline whitespace-nowrap transition-colors"
-                title="Visit www.phidimservice.com.np"
+                title="Visit www.phidimbazar.com"
               >
-                Add www.phidimservice.com.np
+                Add www.phidimbazar.com
               </a>
 
               {/* Logo */}
@@ -359,8 +359,8 @@ export default function Navbar() {
             <div className="py-4 border-t border-gray-200 space-y-2">
               {/* Mobile Ads */}
               <div className="px-4 py-2.5 bg-pink-50 rounded-xl mx-2 flex flex-col gap-1 text-xs font-bold text-[#ff007f] border border-pink-100">
-                <a href="https://www.phidimservice.com.np" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
-                  <span>📢</span> Add www.phidimservice.com.np
+                <a href="https://www.phidimbazar.com" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
+                  <span>📢</span> Add www.phidimbazar.com
                 </a>
               </div>
 
