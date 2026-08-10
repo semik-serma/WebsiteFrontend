@@ -208,27 +208,41 @@ export default function Navbar() {
 
       {/* Main Navbar */}
       <div className={`sticky top-12 w-full bg-white shadow-md z-50 transition-all duration-300 ${scrolled ? 'shadow-lg' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            {isLoggedIn ? (
-              <Link href={pathname === "/" ? "/dashboard" : "/"} className="flex items-center space-x-2 group">
-                <span className="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">
-                  {pathname === "/" ? "Back to Dashboard" : "Back to Home"}
-                </span>
-              </Link>
-            ) : (
-              <div className="flex items-center space-x-2 group">
-                <span className="text-2xl font-bold text-blue-600 cursor-default">
-                  SemikDev
-                </span>
-              </div>
-            )}
+        <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
+            
+            {/* Left Ad + Logo Container */}
+            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+              <a
+                href="https://www.phidimservice.com.np"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden xl:inline-flex items-center text-xs lg:text-sm font-bold text-[#ff007f] hover:text-[#d8006b] hover:underline whitespace-nowrap transition-colors"
+                title="Visit www.phidimservice.com.np"
+              >
+                Add www.phidimservice.com.np
+              </a>
+
+              {/* Logo */}
+              {isLoggedIn ? (
+                <Link href={pathname === "/" ? "/dashboard" : "/"} className="flex items-center space-x-2 group">
+                  <span className="text-xl sm:text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition whitespace-nowrap">
+                    {pathname === "/" ? "Back to Dashboard" : "Back to Home"}
+                  </span>
+                </Link>
+              ) : (
+                <div className="flex items-center space-x-2 group">
+                  <span className="text-xl sm:text-2xl font-bold text-blue-600 cursor-default whitespace-nowrap">
+                    SemikDev
+                  </span>
+                </div>
+              )}
+            </div>
 
             {/* Search Bar - Desktop */}
             <form
               onSubmit={searchToGoogle}
-              className="hidden lg:flex flex-1 max-w-md mx-8"
+              className="hidden lg:flex flex-1 max-w-xs xl:max-w-sm mx-2 xl:mx-4"
             >
               <div className="relative w-full">
                 <input
@@ -256,7 +270,7 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-lg text-base font-medium transition-colors relative ${isActive(link.href)
+                  className={`px-3 xl:px-4 py-2 rounded-lg text-sm xl:text-base font-medium transition-colors relative ${isActive(link.href)
                     ? 'text-blue-600 bg-blue-50 buttonborderrunnercolor'
                     : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
                     }`}
@@ -279,7 +293,7 @@ export default function Navbar() {
                 Admin
               </Link>
             )}
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 sm:gap-4 xl:gap-5 shrink-0">
               {/* Notifications + Friends/Chat (Desktop) */}
               {isLoggedIn && (
                 <div className="hidden md:flex items-center gap-1">
@@ -297,11 +311,11 @@ export default function Navbar() {
                 </div>
               )}
               {/* Auth Buttons - Desktop */}
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:flex items-center gap-3">
                 {!isLoggedIn ? (
                   <Link
                     href="/login"
-                    className="relative inline-flex items-center justify-center px-6 py-2.5 rounded-xl group"
+                    className="relative inline-flex items-center justify-center px-5 py-2 rounded-xl group text-sm"
                   >
                     <span className="absolute inset-0 rounded-xl p-[2px] bg-[linear-gradient(120deg,rgba(34,211,238,1),rgba(168,85,247,1),rgba(236,72,153,1),rgba(34,211,238,1))] bg-[length:300%_300%] animate-[borderMove_4s_linear_infinite]"></span>
                     <span className="absolute inset-[2px] rounded-xl bg-[#020617]"></span>
@@ -312,15 +326,26 @@ export default function Navbar() {
                 ) : (
                   <button
                     onClick={handlelogout}
-                    className="px-5 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition"
+                    className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition text-sm"
                   >
                     Logout
                   </button>
                 )}
               </div>
-              <div className="flex items-center">
+              <div className="flex items-center text-sm font-medium text-gray-700 whitespace-nowrap">
                 <Countvisitor />
               </div>
+
+              {/* Right Ad */}
+              <a
+                href="https://www.phidimbazar.com.np"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden xl:inline-flex items-center text-xs lg:text-sm font-bold text-[#ff007f] hover:text-[#d8006b] hover:underline whitespace-nowrap transition-colors"
+                title="Visit www.phidimbazar.com.np"
+              >
+                Add www.phidimsbazar.com
+              </a>
             </div>
             {/* Mobile Menu Button */}
             <button
@@ -341,8 +366,18 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Menu */}
-          <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+          <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${open ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-gray-200 space-y-2">
+              {/* Mobile Ads */}
+              <div className="px-4 py-2.5 bg-pink-50 rounded-xl mx-2 flex flex-col gap-1 text-xs font-bold text-[#ff007f] border border-pink-100">
+                <a href="https://www.phidimservice.com.np" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
+                  <span>📢</span> Add www.phidimservice.com.np
+                </a>
+                <a href="https://www.phidimbazar.com.np" target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-1.5">
+                  <span>📢</span> Add www.phidimsbazar.com
+                </a>
+              </div>
+
               {/* Mobile Nav Links */}
               {navLinks.map((link) => (
                 <Link

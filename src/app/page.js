@@ -415,16 +415,8 @@ export default function Home() {
                     </Link>
                   </>
                 )}
-                
-                <a href="/cv" download className="inline-flex items-center gap-2 bg-slate-900/90 border border-cyan-500/40 text-cyan-200 px-5 py-3 rounded-xl text-sm font-semibold hover:border-cyan-400 hover:text-white transition-all duration-300 shadow-md">
-                  <Download className="w-4 h-4 text-cyan-400" /> Download CV
-                </a>
 
-                <button onClick={() => window.open("https://wa.me/9779862772457?text=Hey%20I%20visited%20your%20website", "_blank")} className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-3 rounded-xl text-sm font-semibold shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-105">
-                  💬 Hire Me
-                </button>
-
-                <button onClick={handleShare} className="inline-flex items-center gap-2 bg-white/5 border border-white/15 text-white px-4 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 text-sm" title="Share website">
+                <button onClick={handleShare} className="inline-flex items-center gap-2 bg-white/5 border border-white/15 text-white px-4 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300 text-sm hover:scale-105" title="Share website">
                   <Share2 className="h-4 w-4" />
                 </button>
 
@@ -435,14 +427,19 @@ export default function Home() {
 
             </div>
 
-            {/* Right Column: Image Presentation with Glowing Aura & Orbit Sweep */}
-            <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex justify-center items-center">
+            {/* Right Column: Image Presentation with Buttons Migrated Underneath & Pushed Right */}
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={heroLoaded ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="lg:col-span-5 relative mt-8 lg:mt-0 flex flex-col items-center lg:translate-x-6 xl:translate-x-8 space-y-4"
+            >
               
               {/* Outer Background Powder Glow */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600/30 via-blue-500/25 to-indigo-600/20 rounded-full blur-[70px] transform scale-110" />
+              <div className="absolute inset-0 -top-6 bg-gradient-to-tr from-cyan-600/30 via-blue-500/25 to-indigo-600/20 rounded-full blur-[70px] transform scale-110 pointer-events-none" />
 
               {/* Main Portrait Frame with Orbit lines */}
-              <div className="relative w-full max-w-sm sm:max-w-md aspect-[4/5] rounded-[36px] overflow-hidden border border-cyan-500/40 shadow-2xl bg-slate-900/60 backdrop-blur-sm group">
+              <div className="relative w-full max-w-sm sm:max-w-md aspect-[4/5] rounded-[36px] overflow-hidden border border-cyan-500/40 shadow-2xl bg-slate-900/60 backdrop-blur-sm group z-10">
                 
                 {/* User's Portrait Image */}
                 <Image
@@ -458,7 +455,24 @@ export default function Home() {
 
               </div>
 
-            </div>
+              {/* Buttons Migrated Under Photo */}
+              <div className="flex items-center justify-center gap-3 w-full max-w-sm sm:max-w-md z-20 pt-1">
+                <button 
+                  onClick={() => window.open("https://wa.me/9779862772457?text=Hey%20I%20visited%20your%20website", "_blank")} 
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-5 py-3 rounded-2xl text-sm font-semibold shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/50 hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  <span className="text-base">💬</span> Hire Me
+                </button>
+                <a 
+                  href="/cv" 
+                  download 
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-slate-900/95 border border-cyan-500/40 hover:border-cyan-400 text-cyan-200 hover:text-white px-5 py-3 rounded-2xl text-sm font-semibold shadow-lg shadow-black/40 hover:scale-105 active:scale-95 transition-all duration-300"
+                >
+                  <Download className="w-4 h-4 text-cyan-400" /> Download CV
+                </a>
+              </div>
+
+            </motion.div>
 
           </div>
 
