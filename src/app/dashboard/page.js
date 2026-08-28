@@ -7,6 +7,7 @@ import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import DashboardShell, { DashCard, DashboardLoader } from '@/components/DashboardShell';
 
 const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 const fadeUp = {
@@ -268,67 +269,33 @@ export default function ArticleDisplay() {
         : 0;
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-                <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"
-                    />
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-4 text-gray-600 text-lg">Loading articles...</motion.p>
-                </motion.div>
-            </div>
-        );
+        return <DashboardLoader label="Loading articles..." />;
     }
 
     return (
-        <motion.div initial="initial" animate="animate" className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-            {/* Welcome Banner */}
-            <motion.div variants={fadeUp} className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-12 px-4 sm:px-6 lg:px-8">
-                <div className="absolute inset-0 overflow-hidden">
-                    {[...Array(30)].map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="absolute w-1 h-1 bg-white/20 rounded-full"
-                            style={{ left: `${(i * 37 + 13) % 100}%`, top: `${(i * 53 + 7) % 100}%` }}
-                            animate={{ y: [0, -20, 0], opacity: [0.2, 0.6, 0.2] }}
-                            transition={{ duration: 3 + (i % 3), repeat: Infinity, delay: i * 0.2 }}
-                        />
-                    ))}
-                </div>
-                <motion.div variants={fadeUp} className="max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                        <div>
-                            <motion.h1 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-white">
-                                {greeting}, {userName || 'Reader'}!
-                                <motion.span
-                                    animate={{ rotate: [0, 10, 0, -10, 0] }}
-                                    transition={{ duration: 2, repeat: Infinity }}
-                                    className="inline-block ml-2"
-                                >👋</motion.span>
-                            </motion.h1>
-                            <motion.p variants={fadeUp} className="text-blue-100 mt-2 text-lg">
-                                Welcome to your dashboard. Discover stories from our community.
-                            </motion.p>
-                        </div>
-                        <motion.div variants={fadeUp} className="mt-4 md:mt-0 flex gap-3">
-                            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                                onClick={scrollToComments}
-                                className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all flex items-center gap-2 text-sm"
-                            >
-                                <MessageCircle className="w-4 h-4" /> Comments ({comments.length})
-                            </motion.button>
-                            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                                onClick={handleLogout}
-                                className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white rounded-xl hover:bg-white/30 transition-all flex items-center gap-2 text-sm"
-                            >
-                                <LogOut className="w-4 h-4" /> Logout
-                            </motion.button>
-                        </motion.div>
-                    </div>
-                </motion.div>
-            </motion.div>
-
-            <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <DashboardShell
+            title={`${greeting}, ${userName || 'Reader'}!`}
+            subtitle="Welcome to your dashboard. Discover stories from our community."
+            actions={
+                <>
+                    <button
+                        type="button"
+                        onClick={scrollToComments}
+                        className="dash-btn-secondary"
+                    >
+                        <MessageCircle className="w-4 h-4" /> Comments ({comments.length})
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                    >
+                        <LogOut className="w-4 h-4" /> Logout
+                    </button>
+                </>
+            }
+        >
+            <div>
                 {/* Stats */}
                 <motion.div variants={stagger} className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <StatCard icon={BookOpen} label="Total Articles" value={articles.length} color="#2563eb" delay={0} />
@@ -338,7 +305,7 @@ export default function ArticleDisplay() {
                 </motion.div>
 
                 {/* Activity Summary */}
-                <motion.div variants={fadeUp} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                <motion.div variants={fadeUp} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm mb-8">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                             <Sparkles className="w-5 h-5 text-blue-600" /> Activity Overview
@@ -367,7 +334,7 @@ export default function ArticleDisplay() {
                 </motion.div>
 
                 {/* Filters */}
-                <motion.div variants={fadeUp} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+                <motion.div variants={fadeUp} className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm mb-8">
                     <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
                         <div className="flex-1 w-full md:w-auto">
                             <div className="relative">
@@ -452,7 +419,7 @@ export default function ArticleDisplay() {
                                                     }}
                                                 />
                                             ) : (
-                                                <div className="w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                                                <div className="w-full h-full bg-blue-600 flex items-center justify-center">
                                                     <BookOpen className="w-16 h-16 text-white opacity-80" />
                                                 </div>
                                             )}
@@ -469,7 +436,7 @@ export default function ArticleDisplay() {
                                             <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">{title}</h2>
                                             <div className="flex items-center gap-3 mb-4">
                                                 <div className="flex items-center gap-2">
-                                                    <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
+                                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
                                                         {authorInitial}
                                                     </div>
                                                     <span className="text-sm font-medium text-gray-700">{author}</span>
@@ -609,7 +576,7 @@ export default function ArticleDisplay() {
                                         className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-100 transition-all"
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
+                                            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
                                                 {commentUser.charAt(0).toUpperCase()}
                                             </div>
                                             <div className="flex-1 min-w-0">
@@ -638,12 +605,12 @@ export default function ArticleDisplay() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={scrollToTop}
-                        className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-lg flex items-center justify-center"
+                        className="fixed bottom-8 right-8 z-50 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
                     >
                         <ChevronUp className="w-5 h-5" />
                     </motion.button>
                 )}
             </AnimatePresence>
-        </motion.div>
+        </DashboardShell>
     );
 }

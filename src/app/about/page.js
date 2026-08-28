@@ -32,27 +32,27 @@ function SkillBar({ name, level, delay }) {
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true }}
       transition={{ delay }}
-      className="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl backdrop-blur-sm"
+      className="bg-white border border-gray-200 p-5 rounded-2xl shadow-sm"
     >
       <div className="flex justify-between items-center mb-2">
-        <span className="text-base font-semibold text-slate-200">{name}</span>
+        <span className="text-base font-semibold text-gray-800">{name}</span>
         <motion.span
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: delay + 0.3 }}
-          className="text-xs font-bold text-cyan-400"
+          className="text-xs font-bold text-blue-600"
         >
           {level}%
         </motion.span>
       </div>
-      <div className="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+      <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden border border-gray-200">
         <motion.div
           initial={{ width: 0 }}
           whileInView={{ width: `${level}%` }}
           viewport={{ once: true }}
           transition={{ duration: 1.2, delay: delay + 0.2, ease: "easeOut" }}
-          className="bg-gradient-to-r from-blue-600 via-cyan-400 to-teal-300 h-full rounded-full shadow-sm shadow-cyan-500/50"
+          className="bg-gradient-to-r from-blue-600 to-blue-500 h-full rounded-full"
         />
       </div>
     </motion.div>
@@ -84,19 +84,19 @@ export default function About() {
   ];
 
   const whyChoose = [
-    { icon: <Target className="w-7 h-7 text-cyan-400" />, title: "Focus on Quality", desc: "Prioritizing clean code structure, modern standards, and smooth responsive design in every project." },
-    { icon: <Zap className="w-7 h-7 text-cyan-400" />, title: "Modern Tech Stack", desc: "Building applications using Next.js 16, React, Django, and Tailwind CSS for max performance." },
-    { icon: <Cpu className="w-7 h-7 text-cyan-400" />, title: "Creative Problem Solving", desc: "Translating complex ideas into intuitive user experiences with high visual excellence." },
-    { icon: <Shield className="w-7 h-7 text-cyan-400" />, title: "Secure & Scalable", desc: "Designing backend APIs and authentication with robust security best practices." },
-    { icon: <Layers className="w-7 h-7 text-cyan-400" />, title: "Fast Delivery", desc: "Efficient workflow ensuring prompt project completion without sacrificing code quality." },
-    { icon: <Code2 className="w-7 h-7 text-cyan-400" />, title: "Fully Responsive", desc: "Seamless layout adaptation across desktop, tablet, and mobile displays." },
+    { icon: <Target className="w-7 h-7 text-blue-600" />, title: "Focus on Quality", desc: "Prioritizing clean code structure, modern standards, and smooth responsive design in every project." },
+    { icon: <Zap className="w-7 h-7 text-blue-600" />, title: "Modern Tech Stack", desc: "Building applications using Next.js 16, React, Django, and Tailwind CSS for max performance." },
+    { icon: <Cpu className="w-7 h-7 text-blue-600" />, title: "Creative Problem Solving", desc: "Translating complex ideas into intuitive user experiences with high visual excellence." },
+    { icon: <Shield className="w-7 h-7 text-blue-600" />, title: "Secure & Scalable", desc: "Designing backend APIs and authentication with robust security best practices." },
+    { icon: <Layers className="w-7 h-7 text-blue-600" />, title: "Fast Delivery", desc: "Efficient workflow ensuring prompt project completion without sacrificing code quality." },
+    { icon: <Code2 className="w-7 h-7 text-blue-600" />, title: "Fully Responsive", desc: "Seamless layout adaptation across desktop, tablet, and mobile displays." },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white overflow-hidden">
+    <div className="min-h-screen bg-gray-50 text-gray-900 overflow-hidden">
 
       {/* HERO SECTION WITH USER'S PLANET ARC IMAGE (aboutpagebg.png) */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-slate-950">
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden bg-gray-50">
         
         {/* Full Cover Background Image: aboutpagebg.png */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -108,13 +108,13 @@ export default function About() {
             priority
           />
           {/* Smooth Dark Gradient Overlays for contrast */}
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950" />
-          <div className="absolute inset-0 bg-slate-950/20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-transparent to-gray-900/80" />
+          <div className="absolute inset-0 bg-gray-50/20" />
         </div>
 
         {/* Ambient Cyan Lighting */}
         <div className="absolute inset-0 pointer-events-none opacity-20 z-10">
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-cyan-600 rounded-full blur-[180px]" />
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-blue-600 rounded-full blur-[180px]" />
         </div>
 
         {/* Centered Quantum Hero Content */}
@@ -125,7 +125,7 @@ export default function About() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.7 }}
-            className="font-condensed text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black tracking-widest leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-cyan-100 to-blue-300 drop-shadow-[0_0_40px_rgba(34,211,238,0.5)]"
+            className="font-condensed text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-black tracking-widest leading-none text-transparent bg-clip-text bg-gradient-to-b from-white via-blue-100 to-blue-400 drop-shadow-[0_0_40px_rgba(37,99,235,0.4)]"
           >
             SEMIKDEV
           </motion.h1>
@@ -135,7 +135,7 @@ export default function About() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-base sm:text-xl md:text-2xl font-bold tracking-[0.3em] uppercase text-cyan-200/90"
+            className="text-base sm:text-xl md:text-2xl font-bold tracking-[0.3em] uppercase text-blue-100"
           >
             STOP GUESSING — START SCALING
           </motion.h2>
@@ -145,7 +145,7 @@ export default function About() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed px-4"
+            className="text-sm sm:text-base md:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed px-4"
           >
             Crafting high-performance web applications, modern interactive interfaces, and intelligent digital infrastructure.
           </motion.p>
@@ -159,7 +159,7 @@ export default function About() {
           >
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 hover:from-blue-500 hover:to-cyan-400 text-white font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-2xl shadow-xl shadow-cyan-500/30 hover:scale-105 transition-all duration-300 group"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-extrabold text-sm sm:text-base px-8 py-3.5 rounded-2xl shadow-xl shadow-blue-200 hover:scale-105 transition-all duration-300 group"
             >
               Get In Touch <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </Link>
@@ -169,19 +169,19 @@ export default function About() {
       </section>
 
       {/* WHO I AM SECTION */}
-      <motion.section {...fadeInUp} className="py-24 relative bg-slate-950 border-t border-slate-800/60">
+      <motion.section {...fadeInUp} className="py-24 relative bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-12 gap-12 items-center">
             
             {/* Story Text */}
             <motion.div {...fadeInUp} className="lg:col-span-7 space-y-6">
-              <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase">
+              <span className="inline-block text-xs font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-200 px-4 py-1.5 rounded-full uppercase">
                 Who I Am
               </span>
-              <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-                Hi, I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Semik Serma</span>
+              <h2 className="text-3xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+                Hi, I&apos;m <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500">Semik Serma</span>
               </h2>
-              <div className="space-y-4 text-slate-300 text-base leading-relaxed">
+              <div className="space-y-4 text-gray-700 text-base leading-relaxed">
                 <p>
                   I am a passionate web developer dedicated to creating intuitive, high-performance, and visually striking web applications.
                 </p>
@@ -189,7 +189,7 @@ export default function About() {
                   My goal is to push the boundaries of digital engineering, master core technologies, and deliver impactful solutions globally.
                 </p>
                 <p>
-                  I specialize in modern fullstack development using <strong className="text-cyan-300">Next.js</strong>, <strong className="text-cyan-300">React</strong>, <strong className="text-cyan-300">JavaScript</strong>, <strong className="text-cyan-300">Python</strong>, and <strong className="text-cyan-300">Django</strong>.
+                  I specialize in modern fullstack development using <strong className="text-blue-500">Next.js</strong>, <strong className="text-blue-500">React</strong>, <strong className="text-blue-500">JavaScript</strong>, <strong className="text-blue-500">Python</strong>, and <strong className="text-blue-500">Django</strong>.
                 </p>
                 <p>
                   Outside of coding, I stay physically disciplined with regular fitness routines including running, pushups, and athletic exercises.
@@ -205,22 +205,22 @@ export default function About() {
               transition={{ duration: 0.7 }}
               className="lg:col-span-5 grid sm:grid-cols-2 gap-4"
             >
-              <div className="bg-slate-900/80 border border-cyan-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md">
-                <Terminal className="w-8 h-8 text-cyan-400 mb-3" />
-                <h3 className="text-3xl font-extrabold text-white font-condensed tracking-wider">4+ YEARS</h3>
-                <p className="text-xs font-semibold text-slate-400 uppercase mt-1">Coding Experience</p>
+              <div className="bg-white/80 border border-blue-200 p-6 rounded-3xl shadow-xl backdrop-blur-md">
+                <Terminal className="w-8 h-8 text-blue-600 mb-3" />
+                <h3 className="text-3xl font-extrabold text-gray-900 font-condensed tracking-wider">4+ YEARS</h3>
+                <p className="text-xs font-semibold text-gray-600 uppercase mt-1">Coding Experience</p>
               </div>
 
-              <div className="bg-slate-900/80 border border-blue-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md">
+              <div className="bg-white/80 border border-blue-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md">
                 <Rocket className="w-8 h-8 text-blue-400 mb-3" />
-                <h3 className="text-3xl font-extrabold text-white font-condensed tracking-wider">40+ PROJECTS</h3>
-                <p className="text-xs font-semibold text-slate-400 uppercase mt-1">Delivered Worldwide</p>
+                <h3 className="text-3xl font-extrabold text-gray-900 font-condensed tracking-wider">40+ PROJECTS</h3>
+                <p className="text-xs font-semibold text-gray-600 uppercase mt-1">Delivered Worldwide</p>
               </div>
 
-              <div className="bg-slate-900/80 border border-teal-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md sm:col-span-2">
+              <div className="bg-white/80 border border-teal-500/30 p-6 rounded-3xl shadow-xl backdrop-blur-md sm:col-span-2">
                 <Award className="w-8 h-8 text-teal-400 mb-3" />
-                <h3 className="text-xl font-bold text-white">Fullstack Engineering</h3>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                <h3 className="text-xl font-bold text-gray-900">Fullstack Engineering</h3>
+                <p className="text-xs text-gray-600 mt-1 leading-relaxed">
                   Building SaaS platforms, custom enterprise web portals, interactive media apps, and responsive digital solutions.
                 </p>
               </div>
@@ -231,33 +231,33 @@ export default function About() {
       </motion.section>
 
       {/* HOW I LEARNED TO CODE */}
-      <motion.section {...fadeInUp} className="py-20 bg-slate-900/60 border-t border-slate-800/60 relative">
+      <motion.section {...fadeInUp} className="py-20 bg-white/60 border-t border-gray-200 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div {...fadeInUp} className="max-w-4xl mx-auto">
             <div className="text-center mb-10">
-              <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+              <span className="inline-block text-xs font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-200 px-4 py-1.5 rounded-full uppercase mb-3">
                 Journey
               </span>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
                 How I Learned To Build Websites
               </h2>
             </div>
             
-            <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-md space-y-5 text-slate-300 text-base leading-relaxed">
+            <div className="bg-white/80 border border-gray-200 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-md space-y-5 text-gray-700 text-base leading-relaxed">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
                 <p>Currently studying in class 8 at Phidim 4, Gadi Phidim Mavhi School.</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
                 <p>In the mornings, evenings, and holidays, I dedicate focused hours to mastering fullstack web development.</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
                 <p>Given project requirements or designs, I craft tailored web applications: portfolio platforms, news portals, e-commerce stores, and official organization websites.</p>
               </div>
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-cyan-400 mt-1 shrink-0" />
+                <CheckCircle2 className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
                 <p>My primary focus spans SaaS product applications, database architecture with MongoDB, and expanding into cross-platform software environments.</p>
               </div>
             </div>
@@ -266,17 +266,17 @@ export default function About() {
       </motion.section>
 
       {/* SKILLS SECTION */}
-      <motion.section {...fadeInUp} className="py-24 bg-slate-950 border-t border-slate-800/60">
+      <motion.section {...fadeInUp} className="py-24 bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <motion.div {...fadeInUp} className="text-center mb-14">
-            <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+            <span className="inline-block text-xs font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-200 px-4 py-1.5 rounded-full uppercase mb-3">
               Capabilities
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white">
-              My Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Skills</span>
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-900">
+              My Technical <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500">Skills</span>
             </h2>
-            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-2">
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-2">
               Technologies and tools I leverage to engineer robust web solutions
             </p>
           </motion.div>
@@ -293,15 +293,15 @@ export default function About() {
                 key={index}
                 variants={staggerItem}
                 whileHover={{ y: -6 }}
-                className="bg-slate-900/60 border border-slate-800/80 p-6 rounded-2xl backdrop-blur-sm shadow-xl hover:border-cyan-500/40 transition-all duration-300"
+                className="bg-white/60 border border-gray-200/80 p-6 rounded-2xl backdrop-blur-sm shadow-xl hover:border-blue-300 transition-all duration-300"
               >
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-cyan-400 rounded-full" />
+                <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-blue-500 rounded-full" />
                   {category.name}
                 </h3>
                 <ul className="space-y-2">
                   {category.items.map((item, itemIndex) => (
-                    <li key={itemIndex} className="text-sm text-slate-300 flex items-center gap-2">
+                    <li key={itemIndex} className="text-sm text-gray-700 flex items-center gap-2">
                       <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
                       {item}
                     </li>
@@ -315,17 +315,17 @@ export default function About() {
       </motion.section>
 
       {/* WHY CHOOSE ME SECTION */}
-      <motion.section {...fadeInUp} className="py-24 bg-slate-900/40 border-t border-slate-800/60">
+      <motion.section {...fadeInUp} className="py-24 bg-white/40 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <motion.div {...fadeInUp} className="text-center mb-16">
-            <span className="inline-block text-xs font-bold tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-4 py-1.5 rounded-full uppercase mb-3">
+            <span className="inline-block text-xs font-bold tracking-widest text-blue-600 bg-blue-50 border border-blue-200 px-4 py-1.5 rounded-full uppercase mb-3">
               Advantages
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white">
-              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400">Choose Me?</span>
+            <h2 className="text-3xl sm:text-5xl font-black text-gray-900">
+              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-blue-500">Choose Me?</span>
             </h2>
-            <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-2">
+            <p className="text-gray-600 text-base sm:text-lg max-w-2xl mx-auto mt-2">
               What sets my web engineering approach apart
             </p>
           </motion.div>
@@ -336,15 +336,15 @@ export default function About() {
                 key={i}
                 variants={staggerItem}
                 whileHover={{ y: -6 }}
-                className="group bg-slate-900/70 border border-slate-800/80 p-8 rounded-3xl backdrop-blur-sm shadow-xl hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-300"
+                className="group bg-white/70 border border-gray-200/80 p-8 rounded-3xl backdrop-blur-sm shadow-xl hover:border-blue-300 hover:shadow-2xl hover:shadow-blue-100 transition-all duration-300"
               >
-                <div className="mb-6 inline-flex p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/20 group-hover:scale-110 transition-transform duration-300">
+                <div className="mb-6 inline-flex p-3 rounded-2xl bg-blue-50 border border-blue-200 group-hover:scale-110 transition-transform duration-300">
                   {item.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -354,29 +354,29 @@ export default function About() {
 
       {/* LET'S WORK TOGETHER CTA BANNER */}
       {!isloggedin && (
-        <section className="py-24 relative overflow-hidden bg-slate-950 border-t border-slate-800/60">
+        <section className="py-24 relative overflow-hidden bg-gray-50 border-t border-gray-200">
           <div className="absolute inset-0 pointer-events-none opacity-20">
-            <div className="absolute top-10 right-10 w-96 h-96 bg-cyan-600 rounded-full blur-[180px]" />
+            <div className="absolute top-10 right-10 w-96 h-96 bg-blue-600 rounded-full blur-[180px]" />
             <div className="absolute bottom-10 left-10 w-96 h-96 bg-blue-600 rounded-full blur-[180px]" />
           </div>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <motion.div {...fadeInUp} className="space-y-6">
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+              <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tight">
                 Let&apos;s Build Something Incredible
               </h2>
-              <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-xl text-gray-700 max-w-2xl mx-auto leading-relaxed">
                 Have a project or web application in mind? Let&apos;s turn your vision into a reality.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
                 <Link
                   href="/contact"
-                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-cyan-500/25 hover:scale-105 transition-all duration-300 text-sm"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-500 hover:to-blue-500 text-white font-extrabold px-8 py-4 rounded-2xl shadow-xl shadow-blue-200 hover:scale-105 transition-all duration-300 text-sm"
                 >
                   Get In Touch <ArrowUpRight className="w-5 h-5" />
                 </Link>
                 <Link
                   href="/register"
-                  className="inline-flex items-center justify-center gap-2 bg-slate-900 border border-slate-800 text-slate-200 font-bold px-8 py-4 rounded-2xl hover:border-cyan-500/40 hover:bg-slate-850 transition-all duration-300 text-sm"
+                  className="inline-flex items-center justify-center gap-2 bg-white border border-gray-200 text-gray-800 font-bold px-8 py-4 rounded-2xl hover:border-blue-300 hover:bg-gray-50 transition-all duration-300 text-sm"
                 >
                   Start a Project
                 </Link>

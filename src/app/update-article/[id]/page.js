@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import { Camera, Save, X, User, FileText, Image as ImageIcon, Eye, Hash, Type, AlignLeft } from 'lucide-react';
 import { useRef } from "react";
 import { motion, AnimatePresence } from 'framer-motion';
+import DashboardShell, { DashboardLoader } from '@/components/DashboardShell';
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.08 } }
@@ -43,13 +44,14 @@ const page = () => {
     const fileInputRef = useRef(null);
 
     useEffect(() => {
-        const words = formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0;
+        const content = formData.content || '';
+        const words = content.trim() ? content.trim().split(/\s+/).length : 0;
         setWordCount(words);
-        setCharCount(formData.content.length);
+        setCharCount(content.length);
         let filled = 0;
-        if (formData.title.trim()) filled++;
-        if (formData.author.trim()) filled++;
-        if (formData.content.trim()) filled++;
+        if ((formData.title || '').trim()) filled++;
+        if ((formData.author || '').trim()) filled++;
+        if ((formData.content || '').trim()) filled++;
         if (tags.length > 0) filled++;
         setProgress(Math.round((filled / 4) * 100));
     }, [formData, tags]);
@@ -58,13 +60,14 @@ const page = () => {
         try {
             setFetchLoading(true);
             const backendarticledata=await axios.get(api.article.displaysingle(id))
+            const data = backendarticledata.data.data || {};
             setFormData({
-                title: backendarticledata.data.data.title,
-                author: backendarticledata.data.data.author,
-                image: backendarticledata.data.data.image,
-                content:backendarticledata.data.data.content 
+                title: data.title || '',
+                author: data.author || '',
+                image: data.image || null,
+                content: data.content || ''
             })
-            setImagePreview(backendarticledata.data.data.image)
+            setImagePreview(data.image || null)
         } catch (error) {
             console.log('error at fetch data')
         } finally {
@@ -182,20 +185,15 @@ const page = () => {
     ];
 
     if (fetchLoading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-                <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                        className="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full"
-                    />
-                    <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 text-gray-600 text-lg">Loading article...</motion.p>
-                </motion.div>
-            </div>
-        );
+        return <DashboardLoader label="Loading article..." />;
     }
 
     return (
-        <motion.div initial="initial" animate="animate" className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+        <DashboardShell
+            title="Update Article"
+            subtitle="Edit and republish your article content"
+            showQuickNav={true}
+        >
             <div className="max-w-6xl mx-auto">
                 <motion.div variants={fadeUp} className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar Navigation */}
@@ -216,7 +214,7 @@ const page = () => {
                                 </div>
                                 <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                     <motion.div
-                                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                                        className="h-full bg-gradient-to-r from-blue-600 to-blue-500 rounded-full"
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progress}%` }}
                                         transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -229,7 +227,7 @@ const page = () => {
                                         key={id} type="button"
                                         whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}
                                         onClick={() => handleSectionChange(id)}
-                                        className={`w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 flex items-center gap-3 text-sm font-medium ${activeSection === id ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm' : 'text-gray-700'} group`}
+                                        className={`w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:bg-blue-50 transition-all duration-200 flex items-center gap-3 text-sm font-medium ${activeSection === id ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm' : 'text-gray-700'} group`}
                                     >
                                         <div className={`p-2 rounded-lg transition-colors ${activeSection === id ? 'bg-blue-200' : 'bg-blue-100'} group-hover:bg-blue-200`}>
                                             <Icon className="w-4 h-4 text-blue-600" />
@@ -304,14 +302,14 @@ const page = () => {
                                 {/* Tags Field */}
                                 <motion.div variants={fadeUp} id="tags" className="space-y-2">
                                     <label htmlFor="tags" className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                        <span className="w-2 h-2 bg-indigo-600 rounded-full animate-pulse"></span> Tags
+                                        <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse"></span> Tags
                                     </label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <Hash className="h-5 w-5 text-gray-400" />
                                         </div>
                                         <input type="text" id="tags" value={tagInput} onChange={(e) => setTagInput(e.target.value)} onKeyDown={addTag}
-                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                            className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                                             placeholder="Type a tag and press Enter..."
                                         />
                                     </div>
@@ -321,7 +319,7 @@ const page = () => {
                                                 {tags.map((tag) => (
                                                     <motion.span
                                                         key={tag} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
-                                                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full"
+                                                        className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full"
                                                     >
                                                         #{tag}
                                                         <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-600 transition-colors">
@@ -408,7 +406,7 @@ const page = () => {
                                     </motion.button>
                                     <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                                         type="submit" disabled={loading}
-                                        className="px-8 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg"
+                                        className="px-8 py-3 text-sm font-medium text-white bg-gradient-to-r bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg"
                                     >
                                         {loading ? (
                                             <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
@@ -455,7 +453,7 @@ const page = () => {
                                 <div className="flex items-center gap-3 text-sm text-gray-500 mb-6">
                                     <span className="flex items-center gap-1"><User className="w-4 h-4" />{formData.author || 'Unknown'}</span>
                                     {tags.length > 0 && tags.map(t => (
-                                        <span key={t} className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs rounded-full">#{t}</span>
+                                        <span key={t} className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">#{t}</span>
                                     ))}
                                 </div>
                                 <div className="prose prose-gray max-w-none">
@@ -474,7 +472,7 @@ const page = () => {
                     )}
                 </AnimatePresence>
             </div>
-        </motion.div>
+        </DashboardShell>
     )
 }
 

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import axios from 'axios';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
+import DashboardShell from '@/components/DashboardShell';
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.08 } }
@@ -160,7 +161,11 @@ export default function CreateArticlePage() {
     ];
 
     return (
-        <motion.div initial="initial" animate="animate" className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+        <DashboardShell
+            title="Create New Article"
+            subtitle="Share your knowledge and experience with the world"
+            showQuickNav={true}
+        >
             <div className="max-w-6xl mx-auto">
                 <motion.div variants={fadeUp} className="flex flex-col lg:flex-row gap-8">
                     {/* Sidebar Navigation */}
@@ -182,7 +187,7 @@ export default function CreateArticlePage() {
                                 </div>
                                 <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                     <motion.div
-                                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                                        className="h-full bg-blue-600 rounded-full"
                                         initial={{ width: 0 }}
                                         animate={{ width: `${progress}%` }}
                                         transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -197,7 +202,7 @@ export default function CreateArticlePage() {
                                         whileHover={{ x: 4 }}
                                         whileTap={{ scale: 0.98 }}
                                         onClick={() => handleSectionChange(id)}
-                                        className={`w-full text-left px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 flex items-center gap-3 text-sm font-medium ${activeSection === id ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500 shadow-sm' : 'text-gray-700'} group`}
+                                        className={`w-full text-left px-4 py-3 rounded-xl hover:bg-blue-50 transition-all duration-200 flex items-center gap-3 text-sm font-medium ${activeSection === id ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 shadow-sm' : 'text-gray-700'} group`}
                                     >
                                         <div className={`p-2 rounded-lg transition-colors ${activeSection === id ? 'bg-blue-200' : 'bg-blue-100'} group-hover:bg-blue-200`}>
                                             <Icon className="w-4 h-4 text-blue-600" />
@@ -222,18 +227,9 @@ export default function CreateArticlePage() {
                     {/* Main Form Content */}
                     <motion.div variants={fadeUp} className="lg:w-3/4">
                         <div className="bg-white shadow-xl rounded-2xl p-6 sm:p-8 border border-gray-100">
-                            <motion.div variants={fadeUp} className="flex items-center justify-between mb-8">
-                                <div>
-                                    <motion.h1 variants={fadeUp} className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-                                        <motion.span animate={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.6, delay: 0.3 }}>
-                                            <FileText className="w-8 h-8 text-blue-600" />
-                                        </motion.span>
-                                        Create New Article
-                                    </motion.h1>
-                                    <motion.p variants={fadeUp} className="text-gray-600 mt-2">Share your knowledge and experience with the world</motion.p>
-                                </div>
+                            <motion.div variants={fadeUp} className="flex items-center justify-end mb-6">
                                 <motion.div whileHover={{ rotate: 180 }} transition={{ duration: 0.4 }}>
-                                    <FileText className="w-10 h-10 text-blue-200" />
+                                    <FileText className="w-8 h-8 text-blue-200" />
                                 </motion.div>
                             </motion.div>
 
@@ -402,7 +398,7 @@ export default function CreateArticlePage() {
                                     <motion.button
                                         whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                                         type="submit" disabled={loading}
-                                        className="px-8 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2 shadow-lg"
+                                        className="px-8 py-3 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all flex items-center gap-2 shadow-sm"
                                     >
                                         {loading ? (
                                             <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
@@ -470,6 +466,6 @@ export default function CreateArticlePage() {
                     )}
                 </AnimatePresence>
             </div>
-        </motion.div>
+        </DashboardShell>
     );
 }
