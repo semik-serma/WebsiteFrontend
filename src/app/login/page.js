@@ -31,7 +31,13 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Google sign-in error:", error);
-      alert(error.response?.data?.message || error.message || "Failed to start Google sign-in");
+      const msg =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        (error.response?.status === 404
+          ? "Backend endpoint not found (404). Please ensure the backend server is running on port 2000."
+          : error.message);
+      alert(msg);
       setIsGoogleLoading(false);
     }
   };

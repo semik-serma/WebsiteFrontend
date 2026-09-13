@@ -1,9 +1,18 @@
+export const getBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL.replace(/\/+$/, "");
+  }
+  if (
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1")
+  ) {
+    return "http://localhost:2000";
+  }
+  return "https://semik.phidimservice.com.np";
+};
 
-const baseurl = (
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://semik.phidimservice.com.np"
-).replace(/\/+$/, "");
-export const api = {
+const makeApi = (baseurl) => ({
     article: {
         create: `${baseurl}/article/create`,
         display: `${baseurl}/article/displayarticle`,
@@ -90,4 +99,11 @@ export const api = {
         restoreBackup: (filename) => `${baseurl}/admin/backups/restore/${filename}`,
         deleteBackup: (filename) => `${baseurl}/admin/backups/${filename}`,
     },
-}
+});
+
+export const api = new Proxy({}, {
+    get(target, prop) {
+        const currentBase = getBaseUrl();
+        return makeApi(currentBase)[prop];
+    }
+});
