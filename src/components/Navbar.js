@@ -106,10 +106,18 @@ export default function Navbar() {
       setIsLoggedIn(!!t);
       setToken(t || '');
       if (t) {
+        let admin = false;
         try {
           const payload = JSON.parse(atob(t.split('.')[1]));
-          setIsAdmin(payload.role === 'ADMIN');
-        } catch { setIsAdmin(false); }
+          if (payload.role === 'ADMIN') admin = true;
+        } catch {}
+        if (!admin) {
+          try {
+            const u = localStorage.getItem("user");
+            if (u && JSON.parse(u).role === 'ADMIN') admin = true;
+          } catch {}
+        }
+        setIsAdmin(admin);
       } else {
         setIsAdmin(false);
       }

@@ -7,11 +7,13 @@ import { api } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
+    User,
     Film,
     FileText,
     MessageCircle,
     Trash2,
     Shield,
+    ShieldAlert,
     LogOut,
     Search,
     X,
@@ -50,15 +52,27 @@ export default function AdminPage() {
 
     useEffect(() => {
         const t = localStorage.getItem('token');
+        const u = localStorage.getItem('user');
         if (t) {
             setToken(t);
+            let isAdminUser = false;
             try {
                 const payload = JSON.parse(atob(t.split('.')[1]));
                 if (payload.role === 'ADMIN') {
                     setUser(payload);
                     setAuthenticated(true);
+                    isAdminUser = true;
                 }
             } catch {}
+            if (!isAdminUser && u) {
+                try {
+                    const userData = JSON.parse(u);
+                    if (userData.role === 'ADMIN') {
+                        setUser(userData);
+                        setAuthenticated(true);
+                    }
+                } catch {}
+            }
         }
         setLoading(false);
     }, []);
@@ -141,36 +155,52 @@ export default function AdminPage() {
         }
     }, [authenticated, token]);
 
-    const handleDeleteUser = async (id) => {
-        if (!confirm('Delete this user and ALL their data (reels, chats, articles)?')) return;
+    const handleUpdateRole = async (userObj, newRole) => {
+        const actionText = newRole === 'ADMIN' ? 'promote this user to Admin' : 'demote this Admin to regular User';
+        if (!confirm(`Are you sure you want to ${actionText} (${userObj.email})?`)) return;
+        try {
+            const res = await axios.patch(
+                api.admin.updateUserRole(userObj._id),
+                { role: newRole },
+                { headers }
+            );
+            setUsers(prev => prev.map(u => u._id === userObj._id ? { ...u, role: newRole } : u));
+            toast.success(res.data?.message || `User role updated to ${newRole}`);
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to update user role');
+        }
+    };
+
+    const handleDeleteUser = async (id, userEmail) => {
+        if (!confirm(`Delete user ${userEmail || id} and ALL their data (reels, chats, articles)?`)) return;
         try {
             await axios.delete(api.admin.deleteUser(id), { headers });
             setUsers(prev => prev.filter(u => u._id !== id));
             toast.success('User deleted successfully');
         } catch (err) {
-            alert(err.response?.data?.message || 'Delete failed');
+            toast.error(err.response?.data?.message || 'Delete failed');
         }
     };
 
-    const handleDeleteReel = async (id) => {
-        if (!confirm('Delete this reel?')) return;
+    const handleDeleteReel = async (id, caption) => {
+        if (!confirm(`Delete reel "${caption || 'this reel'}"?`)) return;
         try {
             await axios.delete(api.admin.deleteReel(id), { headers });
             setReels(prev => prev.filter(r => r._id !== id));
             toast.success('Reel deleted successfully');
         } catch (err) {
-            alert(err.response?.data?.message || 'Delete failed');
+            toast.error(err.response?.data?.message || 'Delete failed');
         }
     };
 
-    const handleDeleteArticle = async (id) => {
-        if (!confirm('Delete this article?')) return;
+    const handleDeleteArticle = async (id, title) => {
+        if (!confirm(`Delete article "${title || 'this article'}"?`)) return;
         try {
             await axios.delete(api.admin.deleteArticle(id), { headers });
             setArticles(prev => prev.filter(a => a._id !== id));
             toast.success('Article deleted successfully');
         } catch (err) {
-            alert(err.response?.data?.message || 'Delete failed');
+            toast.error(err.response?.data?.message || 'Delete failed');
         }
     };
 
@@ -388,24 +418,84 @@ export default function AdminPage() {
 
                     {activeTab === 'users' && (
                         <motion.div key="users" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-3">
-                            {filteredUsers.map((u) => (
-                                <div key={u._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
-                                            {u.firstname?.[0]}{u.lastname?.[0]}
+                            {filteredUsers.map((u) => {
+                                const isCurrentUser = user && (u.email === user.email || u._id === user.id || u._id === user._id);
+                                const isAdmin = u.role === 'ADMIN';
+
+                                return (
+                                    <div key={u._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden flex-shrink-0">
+                                                {u.avatar ? (
+                                                    <img src={u.avatar} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    `${u.firstname?.[0] || 'U'}${u.lastname?.[0] || ''}`
+                                                )}
+                                            </div>
+                                            <div>
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <p className="font-semibold text-gray-900">{u.firstname} {u.lastname}</p>
+                                                    {isAdmin ? (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200">
+                                                            <Shield className="w-3 h-3" /> ADMIN
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200">
+                                                            USER
+                                                        </span>
+                                                    )}
+                                                    {isCurrentUser && (
+                                                        <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-semibold">
+                                                            You
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="text-xs text-gray-500 mt-0.5">{u.email}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-semibold text-gray-900">{u.firstname} {u.lastname}</p>
-                                            <p className="text-xs text-gray-500">{u.email} {u.role === 'ADMIN' && <span className="text-blue-600 font-medium ml-1">(Admin)</span>}</p>
+
+                                        <div className="flex items-center gap-2 self-end sm:self-center">
+                                            {isAdmin ? (
+                                                <button
+                                                    onClick={() => handleUpdateRole(u, 'USER')}
+                                                    disabled={isCurrentUser}
+                                                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition ${
+                                                        isCurrentUser
+                                                            ? 'opacity-40 cursor-not-allowed bg-gray-50 text-gray-400 border-gray-200'
+                                                            : 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200 shadow-sm'
+                                                    }`}
+                                                    title={isCurrentUser ? 'Cannot demote your own admin account' : 'Demote to regular user'}
+                                                >
+                                                    <ShieldAlert className="w-3.5 h-3.5 text-amber-600" />
+                                                    Demote to User
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() => handleUpdateRole(u, 'ADMIN')}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200 shadow-sm transition"
+                                                    title="Promote to Admin"
+                                                >
+                                                    <ShieldCheck className="w-3.5 h-3.5 text-indigo-600" />
+                                                    Promote to Admin
+                                                </button>
+                                            )}
+
+                                            <button
+                                                onClick={() => handleDeleteUser(u._id, u.email)}
+                                                disabled={isCurrentUser}
+                                                className={`p-2 rounded-lg border transition ${
+                                                    isCurrentUser
+                                                        ? 'opacity-40 cursor-not-allowed text-gray-400 border-gray-200'
+                                                        : 'text-red-500 hover:text-red-700 hover:bg-red-50 border-red-200'
+                                                }`}
+                                                title={isCurrentUser ? 'Cannot delete your own account' : 'Delete user'}
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                         </div>
                                     </div>
-                                    {u.role !== 'ADMIN' && (
-                                        <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition" title="Delete user">
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
+                                );
+                            })}
                             {filteredUsers.length === 0 && <p className="text-center text-gray-400 py-8 text-sm">No users found</p>}
                         </motion.div>
                     )}
@@ -413,15 +503,20 @@ export default function AdminPage() {
                     {activeTab === 'reels' && (
                         <motion.div key="reels" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-3">
                             {filteredReels.map((r) => (
-                                <div key={r._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center justify-between">
+                                <div key={r._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                     <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-gray-900 truncate">{r.caption || 'No caption'}</p>
-                                        <p className="text-xs text-gray-500">
-                                            by {r.user?.firstname} {r.user?.lastname} • {r.media?.length || 0} media • {r.likesCount || 0} likes
+                                        <p className="font-semibold text-gray-900 truncate text-sm sm:text-base">{r.caption || 'Untitled Reel'}</p>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            by <span className="font-medium text-gray-700">{r.user?.firstname} {r.user?.lastname}</span> {r.user?.email && `(${r.user.email})`} • {r.media?.length || 0} media • {r.likesCount || 0} likes
                                         </p>
                                     </div>
-                                    <button onClick={() => handleDeleteReel(r._id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition flex-shrink-0" title="Delete reel">
-                                        <Trash2 className="w-4 h-4" />
+                                    <button
+                                        onClick={() => handleDeleteReel(r._id, r.caption)}
+                                        className="self-end sm:self-center px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition flex items-center gap-1.5"
+                                        title="Delete reel"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        Delete Reel
                                     </button>
                                 </div>
                             ))}
@@ -432,13 +527,25 @@ export default function AdminPage() {
                     {activeTab === 'articles' && (
                         <motion.div key="articles" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-3">
                             {filteredArticles.map((a) => (
-                                <div key={a._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex items-center justify-between">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-gray-900 truncate">{a.title}</p>
-                                        <p className="text-xs text-gray-500">by {a.author}</p>
+                                <div key={a._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        {a.image && (
+                                            <img src={a.image} alt="" className="w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-200" />
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-gray-900 truncate text-sm sm:text-base">{a.title}</p>
+                                            <p className="text-xs text-gray-500 mt-1">
+                                                by <span className="font-medium text-gray-700">{a.author || 'Anonymous'}</span>
+                                            </p>
+                                        </div>
                                     </div>
-                                    <button onClick={() => handleDeleteArticle(a._id)} className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition flex-shrink-0" title="Delete article">
-                                        <Trash2 className="w-4 h-4" />
+                                    <button
+                                        onClick={() => handleDeleteArticle(a._id, a.title)}
+                                        className="self-end sm:self-center px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition flex items-center gap-1.5"
+                                        title="Delete article"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                        Delete Article
                                     </button>
                                 </div>
                             ))}
@@ -560,7 +667,7 @@ export default function AdminPage() {
                                         <Database className="w-10 h-10 text-gray-300 mx-auto mb-3" />
                                         <p className="text-gray-600 font-medium">No backup snapshots found</p>
                                         <p className="text-xs text-gray-400 mt-1">
-                                            Click "Create Snapshot Now" to generate your first manual backup.
+                                            Click &quot;Create Snapshot Now&quot; to generate your first manual backup.
                                         </p>
                                     </div>
                                 )}

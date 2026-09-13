@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { api } from '@/lib/api';
-import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity, ThumbsUp, Share2 } from 'lucide-react';
+import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity, ThumbsUp, Share2, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -102,6 +102,7 @@ export default function ArticleDisplay() {
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
     const [userAvatar, setUserAvatar] = useState('');
+    const [userRole, setUserRole] = useState('');
     const [greeting, setGreeting] = useState('');
     const [showScrollTop, setShowScrollTop] = useState(false);
     const [replyOpen, setReplyOpen] = useState({});
@@ -144,9 +145,16 @@ export default function ArticleDisplay() {
                     setUserName(userData.name || userData.firstname || userData.email || 'User');
                     setUserEmail(userData.email || '');
                     setUserAvatar(userData.avatar || '');
+                    if (userData.role) setUserRole(userData.role);
                 } catch {
                     setUserName('User');
                 }
+            }
+            if (token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.role) setUserRole(payload.role);
+                } catch {}
             }
         }
     };
@@ -367,6 +375,14 @@ export default function ArticleDisplay() {
             subtitle="Welcome to your dashboard. Discover stories from our community."
             actions={
                 <>
+                    {userRole === 'ADMIN' && (
+                        <Link
+                            href="/admin"
+                            className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg shadow-sm transition-all"
+                        >
+                            <Shield className="w-4 h-4" /> Admin Panel
+                        </Link>
+                    )}
                     <button
                         type="button"
                         onClick={scrollToComments}

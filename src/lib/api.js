@@ -95,6 +95,7 @@ const makeApi = (baseurl) => ({
         stats: `${baseurl}/admin/stats`,
         users: `${baseurl}/admin/users`,
         deleteUser: (id) => `${baseurl}/admin/users/${id}`,
+        updateUserRole: (id) => `${baseurl}/admin/users/${id}/role`,
         reels: `${baseurl}/admin/reels`,
         deleteReel: (id) => `${baseurl}/admin/reels/${id}`,
         articles: `${baseurl}/admin/articles`,
