@@ -28,8 +28,28 @@ export default function RegisterPage() {
     try {
       setIsGoogleLoading(true);
       const redirectUri = `${window.location.origin}/auth/google/callback`;
-      const response = await axios.get(api.auth.googleUrl(redirectUri));
-      const authUrl = response.data?.data?.url;
+
+      let authUrl = null;
+      try {
+        const response = await axios.get(api.auth.googleUrl(redirectUri));
+        authUrl = response.data?.data?.url;
+      } catch (backendErr) {
+        console.warn("Backend google URL fetch failed, trying client fallback:", backendErr.message);
+      }
+
+      if (!authUrl) {
+        const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '954561207883-o97l8sktus7rblu4pfnkj7ohn85cfd1a.apps.googleusercontent.com';
+        const params = new URLSearchParams({
+          client_id: clientId,
+          redirect_uri: redirectUri,
+          response_type: 'code',
+          scope: 'openid email profile',
+          access_type: 'offline',
+          prompt: 'select_account',
+        });
+        authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+      }
+
       if (authUrl) {
         window.location.href = authUrl;
       } else {
@@ -40,9 +60,8 @@ export default function RegisterPage() {
       const msg =
         error.response?.data?.message ||
         error.response?.data?.error ||
-        (error.response?.status === 404
-          ? "Backend endpoint not found (404). Please ensure the backend server is running on port 2000."
-          : error.message);
+        error.message ||
+        "Failed to start Google sign-in";
       alert(msg);
       setIsGoogleLoading(false);
     }
