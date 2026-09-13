@@ -9,13 +9,32 @@ import { useEffect } from 'react';
 import { motion } from "framer-motion";
 
 export default function LoginPage() {
-const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     localStorage.removeItem("isLoggedIn");
   }, []);
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsGoogleLoading(true);
+      const redirectUri = `${window.location.origin}/auth/google/callback`;
+      const response = await axios.get(api.auth.googleUrl(redirectUri));
+      const authUrl = response.data?.data?.url;
+      if (authUrl) {
+        window.location.href = authUrl;
+      } else {
+        throw new Error("Could not retrieve Google sign-in URL");
+      }
+    } catch (error) {
+      console.error("Google sign-in error:", error);
+      alert(error.response?.data?.message || error.message || "Failed to start Google sign-in");
+      setIsGoogleLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
   e.preventDefault();
@@ -291,9 +310,55 @@ const [email, setEmail] = useState("");
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.9 }}
-                  className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300"
+                  className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300 shadow-lg cursor-pointer"
                 >
                   Sign In
+                </motion.button>
+
+                {/* Divider */}
+                <div className="relative flex items-center justify-center my-3">
+                  <div className="border-t border-white/10 w-full"></div>
+                  <span className="bg-black/60 px-3 text-xs text-gray-400 uppercase tracking-wider rounded-full py-1 border border-white/5">
+                    or
+                  </span>
+                  <div className="border-t border-white/10 w-full"></div>
+                </div>
+
+                {/* Google Sign-in Button */}
+                <motion.button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={isGoogleLoading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.95 }}
+                  className="w-full py-3 px-4 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-medium rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-md backdrop-blur-sm cursor-pointer disabled:opacity-50"
+                >
+                  {isGoogleLoading ? (
+                    <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <path
+                        fill="#4285F4"
+                        d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
+                      />
+                      <path
+                        fill="#34A853"
+                        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.26 21.36 7.36 24 12 24z"
+                      />
+                      <path
+                        fill="#FBBC05"
+                        d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.16 0 9.97 0 12s.46 3.84 1.26 5.42l4.02-3.15z"
+                      />
+                      <path
+                        fill="#EA4335"
+                        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.26 2.64 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                      />
+                    </svg>
+                  )}
+                  <span>{isGoogleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
                 </motion.button>
 
                 <motion.div

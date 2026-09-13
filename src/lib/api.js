@@ -15,7 +15,9 @@ export const api = {
         login: `${baseurl}/auth/loginuser`,
         verifyuser: `${baseurl}/auth/verifyuser`,
         register: `${baseurl}/auth/register`,
-        logout: `${baseurl}/auth/logout`
+        logout: `${baseurl}/auth/logout`,
+        googleUrl: (redirectUri) => `${baseurl}/auth/google/url?redirect_uri=${encodeURIComponent(redirectUri)}`,
+        googleCallback: `${baseurl}/auth/google/callback`
     },
     comment: {
         create: `${baseurl}/comment`,
