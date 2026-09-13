@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
     User,
-    Film,
     FileText,
     MessageCircle,
     Trash2,
@@ -42,7 +41,6 @@ export default function AdminPage() {
 
     const [stats, setStats] = useState(null);
     const [users, setUsers] = useState([]);
-    const [reels, setReels] = useState([]);
     const [articles, setArticles] = useState([]);
     const [backups, setBackups] = useState([]);
     const [backupLoading, setBackupLoading] = useState(false);
@@ -110,7 +108,6 @@ export default function AdminPage() {
         setAuthenticated(false);
         setStats(null);
         setUsers([]);
-        setReels([]);
         setArticles([]);
         setBackups([]);
     };
@@ -130,16 +127,14 @@ export default function AdminPage() {
     const fetchData = async () => {
         if (!authenticated || !token) return;
         try {
-            const [statsRes, usersRes, reelsRes, articlesRes, backupsRes] = await Promise.all([
+            const [statsRes, usersRes, articlesRes, backupsRes] = await Promise.all([
                 axios.get(api.admin.stats, { headers }),
                 axios.get(api.admin.users, { headers }),
-                axios.get(api.admin.reels, { headers }),
                 axios.get(api.admin.articles, { headers }),
                 axios.get(api.admin.backups, { headers }).catch(() => ({ data: { backups: [] } })),
             ]);
             setStats(statsRes.data);
             setUsers(usersRes.data.users || []);
-            setReels(reelsRes.data.reels || []);
             setArticles(articlesRes.data.articles || []);
             setBackups(backupsRes.data?.backups || []);
         } catch (err) {
@@ -177,17 +172,6 @@ export default function AdminPage() {
             await axios.delete(api.admin.deleteUser(id), { headers });
             setUsers(prev => prev.filter(u => u._id !== id));
             toast.success('User deleted successfully');
-        } catch (err) {
-            toast.error(err.response?.data?.message || 'Delete failed');
-        }
-    };
-
-    const handleDeleteReel = async (id, caption) => {
-        if (!confirm(`Delete reel "${caption || 'this reel'}"?`)) return;
-        try {
-            await axios.delete(api.admin.deleteReel(id), { headers });
-            setReels(prev => prev.filter(r => r._id !== id));
-            toast.success('Reel deleted successfully');
         } catch (err) {
             toast.error(err.response?.data?.message || 'Delete failed');
         }
@@ -314,13 +298,11 @@ export default function AdminPage() {
     const tabs = [
         { id: 'dashboard', label: 'Dashboard', icon: Shield },
         { id: 'users', label: 'Users', icon: Users },
-        { id: 'reels', label: 'Reels', icon: Film },
         { id: 'articles', label: 'Articles', icon: FileText },
         { id: 'backups', label: 'Disaster Recovery & Backups', icon: Database },
     ];
 
     const filteredUsers = users.filter(u => `${u.firstname} ${u.lastname} ${u.email}`.toLowerCase().includes(searchQuery.toLowerCase()));
-    const filteredReels = reels.filter(r => (r.caption || '').toLowerCase().includes(searchQuery.toLowerCase()));
     const filteredArticles = articles.filter(a => (a.title || '').toLowerCase().includes(searchQuery.toLowerCase()));
     const filteredBackups = backups.filter(b => (b.filename || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
@@ -363,10 +345,9 @@ export default function AdminPage() {
                 <AnimatePresence mode="wait">
                     {activeTab === 'dashboard' && stats && (
                         <motion.div key="dashboard" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-6">
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {[
                                     { label: 'Total Users', value: stats.totalUsers, icon: Users, color: 'from-blue-500 to-blue-600' },
-                                    { label: 'Total Reels', value: stats.totalReels, icon: Film, color: 'from-purple-500 to-purple-600' },
                                     { label: 'Total Articles', value: stats.totalArticles, icon: FileText, color: 'from-green-500 to-green-600' },
                                     { label: 'Total Chats', value: stats.totalChats, icon: MessageCircle, color: 'from-orange-500 to-orange-600' },
                                 ].map((item) => (
@@ -500,29 +481,7 @@ export default function AdminPage() {
                         </motion.div>
                     )}
 
-                    {activeTab === 'reels' && (
-                        <motion.div key="reels" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-3">
-                            {filteredReels.map((r) => (
-                                <div key={r._id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-gray-900 truncate text-sm sm:text-base">{r.caption || 'Untitled Reel'}</p>
-                                        <p className="text-xs text-gray-500 mt-1">
-                                            by <span className="font-medium text-gray-700">{r.user?.firstname} {r.user?.lastname}</span> {r.user?.email && `(${r.user.email})`} • {r.media?.length || 0} media • {r.likesCount || 0} likes
-                                        </p>
-                                    </div>
-                                    <button
-                                        onClick={() => handleDeleteReel(r._id, r.caption)}
-                                        className="self-end sm:self-center px-3 py-1.5 text-xs font-medium text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 rounded-lg transition flex items-center gap-1.5"
-                                        title="Delete reel"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                        Delete Reel
-                                    </button>
-                                </div>
-                            ))}
-                            {filteredReels.length === 0 && <p className="text-center text-gray-400 py-8 text-sm">No reels found</p>}
-                        </motion.div>
-                    )}
+
 
                     {activeTab === 'articles' && (
                         <motion.div key="articles" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-3">

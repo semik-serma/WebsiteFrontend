@@ -42,7 +42,6 @@ export default function Footer() {
                   <li><Link href="/contact" className="hover:text-blue-600 transition-colors">Contact</Link></li>
                 </>
               )}
-              <li><Link href="/reels" className="hover:text-blue-600 transition-colors">Reels</Link></li>
             </ul>
           </div>
 

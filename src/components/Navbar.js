@@ -175,21 +175,18 @@ export default function Navbar() {
       { href: "/dashboard", label: "Dashboard" },
       { href: "/create-article", label: "Create Article" },
       { href: "/update-article", label: "Update Article" },
-      { href: "/reels", label: "Reels" },
     ]
     : [
       { href: "/", label: "Home" },
       { href: "/about", label: "About" },
       { href: "/contact", label: "Contact" },
       { href: "/calculator", label: "Calculator" },
-      { href: "/reels", label: "Reels" }
     ];
 
 
   const isActive = (href) => {
     if (href === '/') return pathname === href;
     if (href.startsWith('/update-article')) return pathname.startsWith('/update-article');
-    if (href === '/reels') return pathname === '/reels' || pathname.startsWith('/reels/');
     return pathname === href || pathname.startsWith(href + '/');
   };
 

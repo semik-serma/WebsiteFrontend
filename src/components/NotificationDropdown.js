@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { api } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, UserPlus, UserCheck, MessageCircle, Video, Check, Loader2 } from 'lucide-react';
+import { Bell, UserPlus, UserCheck, MessageCircle, Check, Loader2 } from 'lucide-react';
 
 export default function NotificationDropdown() {
     const router = useRouter();
@@ -78,7 +78,7 @@ export default function NotificationDropdown() {
         setOpen(false);
         if (notif.type === 'friend_request' || notif.type === 'friend_accepted') {
             router.push('/friends');
-        } else if (notif.type === 'new_message' || notif.type === 'reel_shared') {
+        } else if (notif.type === 'new_message') {
             const data = notif.data || {};
             if (data.chatId) {
                 const fromId = notif.fromUser?._id;
@@ -95,7 +95,6 @@ export default function NotificationDropdown() {
             case 'friend_request': return <UserPlus className="w-4 h-4 text-blue-400" />;
             case 'friend_accepted': return <UserCheck className="w-4 h-4 text-green-400" />;
             case 'new_message': return <MessageCircle className="w-4 h-4 text-purple-400" />;
-            case 'reel_shared': return <Video className="w-4 h-4 text-pink-400" />;
             default: return <Bell className="w-4 h-4 text-gray-400" />;
         }
     };

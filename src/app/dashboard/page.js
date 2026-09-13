@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { api } from '@/lib/api';
-import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity, ThumbsUp, Share2, Shield } from 'lucide-react';
+import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity, ThumbsUp, Share2, Shield, Globe, MoreHorizontal, X, Volume2 } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -93,6 +93,12 @@ export default function ArticleDisplay() {
     const [displayCount, setDisplayCount] = useState(9);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedAuthor, setSelectedAuthor] = useState('all');
+    const [articleLikes, setArticleLikes] = useState({});
+    const [userLikedArticles, setUserLikedArticles] = useState({});
+    const [articleShares, setArticleShares] = useState({});
+    const [expandedArticles, setExpandedArticles] = useState({});
+    const [dismissedArticles, setDismissedArticles] = useState({});
+    const [openMenuArticleId, setOpenMenuArticleId] = useState(null);
     
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -169,7 +175,29 @@ export default function ArticleDisplay() {
     const fetchArticles = async () => {
         try {
             const response = await axios.get(api.article.display);
-            setArticles(response.data?.articles || []);
+            const list = response.data?.articles || [];
+            setArticles(list);
+            let currentEmail = '';
+            if (typeof window !== 'undefined') {
+                const u = localStorage.getItem('user');
+                if (u) {
+                    try { currentEmail = JSON.parse(u).email || ''; } catch {}
+                }
+            }
+            const initialLikes = {};
+            const initialUserLiked = {};
+            const initialShares = {};
+            list.forEach(a => {
+                if (a?._id) {
+                    const likesArr = Array.isArray(a.likes) ? a.likes : [];
+                    initialLikes[a._id] = likesArr.length;
+                    initialUserLiked[a._id] = currentEmail ? likesArr.includes(currentEmail) : false;
+                    initialShares[a._id] = a.sharesCount || 0;
+                }
+            });
+            setArticleLikes(initialLikes);
+            setUserLikedArticles(initialUserLiked);
+            setArticleShares(initialShares);
         } catch (error) {
             console.error('Error fetching articles:', error);
         } finally {
@@ -291,6 +319,63 @@ export default function ArticleDisplay() {
         }
     };
 
+    const handleLikeArticle = async (articleId) => {
+        if (!isLoggedIn) {
+            toast.error('Please login to like articles');
+            router.push('/login');
+            return;
+        }
+        const isCurrentlyLiked = !!userLikedArticles[articleId];
+        const currentCount = articleLikes[articleId] ?? 0;
+        setUserLikedArticles(prev => ({ ...prev, [articleId]: !isCurrentlyLiked }));
+        setArticleLikes(prev => ({ ...prev, [articleId]: isCurrentlyLiked ? Math.max(0, currentCount - 1) : currentCount + 1 }));
+
+        try {
+            const res = await axios.post(api.article.like(articleId), { userEmail });
+            if (res.data?.success) {
+                setUserLikedArticles(prev => ({ ...prev, [articleId]: res.data.hasLiked }));
+                setArticleLikes(prev => ({ ...prev, [articleId]: res.data.likesCount }));
+            }
+        } catch (err) {
+            setUserLikedArticles(prev => ({ ...prev, [articleId]: isCurrentlyLiked }));
+            setArticleLikes(prev => ({ ...prev, [articleId]: currentCount }));
+            toast.error('Failed to update like');
+        }
+    };
+
+    const handleShareArticle = async (article) => {
+        const url = `${window.location.origin}/articles/${article._id}`;
+        if (typeof navigator !== 'undefined' && navigator.share) {
+            try {
+                await navigator.share({
+                    title: article.title || 'Article',
+                    text: article.content ? article.content.substring(0, 100) : '',
+                    url: url
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            }
+        } else if (typeof navigator !== 'undefined') {
+            await navigator.clipboard.writeText(url);
+            toast.success('Article link copied to clipboard!');
+        }
+        try {
+            const res = await axios.post(api.article.share(article._id));
+            if (res.data?.success) {
+                setArticleShares(prev => ({ ...prev, [article._id]: res.data.sharesCount }));
+            }
+        } catch (e) {}
+    };
+
+    const toggleSeeMore = (id) => {
+        setExpandedArticles(prev => ({ ...prev, [id]: !prev[id] }));
+    };
+
+    const handleDismissArticle = (id) => {
+        setDismissedArticles(prev => ({ ...prev, [id]: true }));
+        toast.info('Post hidden from feed');
+    };
+
     const handleLoginRedirect = () => router.push('/login');
 
     const getUniqueAuthors = () => {
@@ -303,6 +388,7 @@ export default function ArticleDisplay() {
 
     const filteredArticles = articles.filter(article => {
         if (!article || typeof article !== 'object') return false;
+        if (dismissedArticles[article._id]) return false;
         const title = article.title || '';
         const content = article.content || '';
         const author = article.author || '';
@@ -496,7 +582,7 @@ export default function ArticleDisplay() {
                     </motion.div>
                 ) : (
                     <>
-                        <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="max-w-2xl mx-auto space-y-6">
                             {articlesToDisplay.map((article, index) => {
                                 if (!article || typeof article !== 'object') return null;
                                 const title = article.title || 'Untitled';
@@ -504,69 +590,198 @@ export default function ArticleDisplay() {
                                 const content = article.content || '';
                                 const imageUrl = article.image || null;
                                 const readingTime = calculateReadingTime(content);
-                                const date = formatDate(article.createdAt || article.updatedAt);
+                                const timeAgo = formatCommentDate(article.createdAt || article.updatedAt);
                                 const authorInitial = getAuthorInitial(author);
+                                const isExpanded = !!expandedArticles[article._id];
+                                const isLiked = !!userLikedArticles[article._id];
+                                const likesCount = articleLikes[article._id] ?? (Array.isArray(article.likes) ? article.likes.length : 0);
+                                const sharesCount = articleShares[article._id] ?? (article.sharesCount || 0);
 
                                 return (
-                                    <motion.div
+                                    <motion.article
                                         key={article._id || `article-${index}`}
                                         variants={fadeUp}
-                                        whileHover={{ y: -6, boxShadow: '0 25px 50px rgba(0,0,0,0.1)' }}
-                                        className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 transition-all duration-300 group"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.4, delay: index * 0.05 }}
+                                        className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
                                     >
-                                        <div className="relative h-56 overflow-hidden">
-                                            {imageUrl ? (
-                                                <img src={imageUrl} alt={title}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                        {/* Header (Matching Reference Image) */}
+                                        <div className="p-4 flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                {article.authorAvatar ? (
+                                                    <img
+                                                        src={article.authorAvatar}
+                                                        alt={author}
+                                                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                                                    />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                                                        {authorInitial}
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="font-bold text-gray-900 text-sm sm:text-base hover:underline cursor-pointer">
+                                                            {author}
+                                                        </span>
+                                                        <span className="text-gray-400 text-xs">🪓</span>
+                                                    </div>
+                                                    <div className="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                                                        <span className="font-medium text-gray-600">{author.split('@')[0]}</span>
+                                                        <span>·</span>
+                                                        <span>{timeAgo}</span>
+                                                        <span>·</span>
+                                                        <Globe className="w-3.5 h-3.5 text-gray-500 inline" title="Public" />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center gap-1 relative">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setOpenMenuArticleId(openMenuArticleId === article._id ? null : article._id)}
+                                                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition"
+                                                    title="Options"
+                                                >
+                                                    <MoreHorizontal className="w-5 h-5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDismissArticle(article._id)}
+                                                    className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition"
+                                                    title="Hide post"
+                                                >
+                                                    <X className="w-5 h-5" />
+                                                </button>
+
+                                                {/* Options Dropdown */}
+                                                {openMenuArticleId === article._id && (
+                                                    <div className="absolute right-0 top-10 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 z-20">
+                                                        <button
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(`${window.location.origin}/articles/${article._id}`);
+                                                                toast.success('Article link copied!');
+                                                                setOpenMenuArticleId(null);
+                                                            }}
+                                                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                                        >
+                                                            <Share2 className="w-4 h-4" /> Copy Link
+                                                        </button>
+                                                        <Link
+                                                            href={`/articles/${article._id}`}
+                                                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
+                                                            onClick={() => setOpenMenuArticleId(null)}
+                                                        >
+                                                            <BookOpen className="w-4 h-4" /> View Full Article
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Post Title & Text Excerpt */}
+                                        <div className="px-4 pb-3">
+                                            <Link href={`/articles/${article._id}`} className="group block">
+                                                <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                                                    {title}
+                                                </h2>
+                                            </Link>
+                                            {content && (
+                                                <p className="text-gray-800 text-sm sm:text-base leading-relaxed whitespace-pre-line">
+                                                    {isExpanded || content.length <= 160
+                                                        ? content
+                                                        : `${content.substring(0, 160)}...`}
+                                                    {content.length > 160 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => toggleSeeMore(article._id)}
+                                                            className="ml-1.5 font-semibold text-gray-500 hover:text-blue-600 transition inline-block"
+                                                        >
+                                                            {isExpanded ? 'See less' : 'See more'}
+                                                        </button>
+                                                    )}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Media Container (Framed slate backdrop matching Reference Image) */}
+                                        {imageUrl ? (
+                                            <div className="relative bg-[#8b95a5] dark:bg-slate-900 overflow-hidden flex items-center justify-center max-h-[520px] min-h-[300px]">
+                                                <img
+                                                    src={imageUrl}
+                                                    alt={title}
+                                                    className="w-full h-full max-h-[520px] object-contain mx-auto"
                                                     onError={(e) => {
-                                                        e.target.src = `https://via.placeholder.com/600x400/4F46E5/FFFFFF?text=${encodeURIComponent(title.substring(0, 20))}`;
+                                                        e.target.src = `https://via.placeholder.com/800x600/4F46E5/FFFFFF?text=${encodeURIComponent(title.substring(0, 20))}`;
                                                         e.target.onerror = null;
                                                     }}
                                                 />
-                                            ) : (
-                                                <div className="w-full h-full bg-blue-600 flex items-center justify-center">
-                                                    <BookOpen className="w-16 h-16 text-white opacity-80" />
-                                                </div>
-                                            )}
-                                            <div className="absolute top-4 left-4">
-                                                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium text-gray-800 shadow-sm">
-                                                    {readingTime} min read
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="p-6">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">Article</span>
-                                            </div>
-                                            <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">{title}</h2>
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm">
-                                                        {authorInitial}
+                                                {/* Title pill overlay at bottom like reference image */}
+                                                <div className="absolute bottom-4 left-4 right-4 flex justify-center pointer-events-none">
+                                                    <div className="bg-black/70 backdrop-blur-md text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg text-center max-w-[85%] shadow-lg border border-white/10 truncate">
+                                                        {title}
                                                     </div>
-                                                    <span className="text-sm font-medium text-gray-700">{author}</span>
                                                 </div>
-                                                <span className="text-gray-400">•</span>
-                                                <div className="flex items-center gap-1 text-sm text-gray-500">
-                                                    <Calendar className="w-4 h-4" />{date}
+                                                {/* Sound icon indicator */}
+                                                <div className="absolute bottom-3 right-3 p-1.5 rounded-full bg-black/60 text-white/90 shadow-sm pointer-events-none">
+                                                    <Volume2 className="w-4 h-4" />
                                                 </div>
                                             </div>
-                                            <p className="text-gray-600 mb-6 line-clamp-3">
-                                                {content.length > 150 ? `${content.substring(0, 150)}...` : content}
-                                            </p>
-                                            <div className="border-t border-gray-100 pt-4">
-                                                <Link href={`/articles/${article._id}`}
-                                                    className="group/link block w-full px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors text-center flex items-center justify-center gap-2"
+                                        ) : (
+                                            <div className="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-slate-900 py-16 px-6 text-center text-white flex flex-col items-center justify-center">
+                                                <BookOpen className="w-12 h-12 text-blue-300 mb-3 opacity-80" />
+                                                <h3 className="text-lg font-bold max-w-md">{title}</h3>
+                                                <p className="text-xs text-blue-200 mt-2">{readingTime} min read</p>
+                                            </div>
+                                        )}
+
+                                        {/* Footer Interaction Bar (Matching Reference Image) */}
+                                        <div className="px-4 py-2.5 border-t border-gray-100 flex items-center justify-between">
+                                            <div className="flex items-center gap-6 text-gray-600">
+                                                {/* Like button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleLikeArticle(article._id)}
+                                                    className={`flex items-center gap-1.5 text-sm font-semibold transition ${
+                                                        isLiked ? 'text-blue-600' : 'text-gray-600 hover:text-blue-600'
+                                                    }`}
                                                 >
-                                                    Read More
-                                                    <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                                                </Link>
+                                                    <ThumbsUp className={`w-5 h-5 ${isLiked ? 'fill-blue-600 stroke-blue-600' : ''}`} />
+                                                    <span>{likesCount > 0 ? formatNumber(likesCount) : 'Like'}</span>
+                                                </button>
+
+                                                {/* Comment button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={scrollToComments}
+                                                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-blue-600 transition"
+                                                >
+                                                    <MessageCircle className="w-5 h-5" />
+                                                    <span>{comments.length > 0 ? formatNumber(comments.length) : 'Comment'}</span>
+                                                </button>
+
+                                                {/* Share button */}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleShareArticle(article)}
+                                                    className="flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-blue-600 transition"
+                                                    title="Share article"
+                                                >
+                                                    <Share2 className="w-5 h-5" />
+                                                    <span>{sharesCount > 0 ? formatNumber(sharesCount) : 'Share'}</span>
+                                                </button>
+                                            </div>
+
+                                            {/* Blue Reaction Icon Badge */}
+                                            <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-sm" title="Top Reaction">
+                                                <ThumbsUp className="w-3.5 h-3.5 fill-white" />
                                             </div>
                                         </div>
-                                    </motion.div>
+                                    </motion.article>
                                 );
                             })}
-                        </motion.div>
+                        </div>
 
                         {/* Load More / Show Less */}
                         {filteredArticles.length > 9 && (

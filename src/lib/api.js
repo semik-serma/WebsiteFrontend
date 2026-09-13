@@ -18,7 +18,9 @@ const makeApi = (baseurl) => ({
         display: `${baseurl}/article/displayarticle`,
         displaysingle: (id) => `${baseurl}/article/display/${id}`,
         delete: (id) => `${baseurl}/article/deletearticle/${id}`,
-        update: (id) => `${baseurl}/article/updatearticle/${id}`
+        update: (id) => `${baseurl}/article/updatearticle/${id}`,
+        like: (id) => `${baseurl}/article/like/${id}`,
+        share: (id) => `${baseurl}/article/share/${id}`,
     },
     auth: {
         login: `${baseurl}/auth/loginuser`,
@@ -56,18 +58,6 @@ const makeApi = (baseurl) => ({
         visitcount: `${baseurl}/visit/visitor`,
         visitcountget: `${baseurl}/visit/visitorget`,
     },
-    reel: {
-        feed: `${baseurl}/reel/feed`,
-        upload: `${baseurl}/reel/upload`,
-        getById: (id) => `${baseurl}/reel/${id}`,
-        like: (id) => `${baseurl}/reel/like/${id}`,
-        save: (id) => `${baseurl}/reel/save/${id}`,
-        saved: `${baseurl}/reel/saved`,
-        comment: (id) => `${baseurl}/reel/comment/${id}`,
-        comments: (id) => `${baseurl}/reel/comments/${id}`,
-        userReels: (userId) => `${baseurl}/reel/user/${userId}`,
-        delete: (id) => `${baseurl}/reel/${id}`,
-    },
     friend: {
         search: (q) => `${baseurl}/friend/search?q=${encodeURIComponent(q)}`,
         sendRequest: `${baseurl}/friend/request`,
@@ -83,7 +73,6 @@ const makeApi = (baseurl) => ({
         with: (userId) => `${baseurl}/chat/with/${userId}`,
         messages: (chatId) => `${baseurl}/chat/messages/${chatId}`,
         send: `${baseurl}/chat/send`,
-        shareReel: `${baseurl}/chat/share-reel`,
     },
     notification: {
         list: `${baseurl}/notification`,
@@ -96,8 +85,6 @@ const makeApi = (baseurl) => ({
         users: `${baseurl}/admin/users`,
         deleteUser: (id) => `${baseurl}/admin/users/${id}`,
         updateUserRole: (id) => `${baseurl}/admin/users/${id}/role`,
-        reels: `${baseurl}/admin/reels`,
-        deleteReel: (id) => `${baseurl}/admin/reels/${id}`,
         articles: `${baseurl}/admin/articles`,
         deleteArticle: (id) => `${baseurl}/admin/articles/${id}`,
         backups: `${baseurl}/admin/backups`,

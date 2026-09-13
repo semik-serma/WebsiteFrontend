@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
 import axios from 'axios';
 import { api } from '@/lib/api';
 import { motion } from 'framer-motion';
-import { Send, Loader2, Image, ChevronDown, MessageCircle } from 'lucide-react';
+import { Send, Loader2, ChevronDown, MessageCircle } from 'lucide-react';
 import DashboardShell, { DashboardLoader } from '@/components/DashboardShell';
 
 function isOnline(user) {
@@ -142,17 +141,6 @@ export default function ChatDetailPage() {
                                         ? 'bg-blue-600 text-white rounded-br-md'
                                         : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
                                 }`}>
-                                    {msg.reel ? (
-                                        <Link href="/reels" className="block mb-1">
-                                            <div className={`flex items-center gap-2 rounded-lg p-2 ${mine ? 'bg-blue-700/50' : 'bg-blue-50'}`}>
-                                                <Image className={`w-8 h-8 flex-shrink-0 ${mine ? 'text-blue-200' : 'text-blue-600'}`} />
-                                                <div className="text-sm">
-                                                    <p className={`font-medium ${mine ? 'text-blue-100' : 'text-blue-600'}`}>Shared Reel</p>
-                                                    <p className={`text-xs ${mine ? 'text-blue-200' : 'text-gray-500'}`}>{msg.reel.caption?.substring(0, 30) || 'View reel'}</p>
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ) : null}
                                     {msg.content && <p className="text-sm leading-relaxed">{msg.content}</p>}
                                     <p className={`text-[10px] mt-1 ${mine ? 'text-blue-200' : 'text-gray-400'}`}>
                                         {formatTime(msg.createdAt)}
