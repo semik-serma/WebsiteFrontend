@@ -172,6 +172,9 @@ export default function Home() {
   const [heroLoaded, setHeroLoaded] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const [expandedComments, setExpandedComments] = useState(false);
+  const [replyOpen, setReplyOpen] = useState({});
+  const [replyTexts, setReplyTexts] = useState({});
+  const [submittingReply, setSubmittingReply] = useState({});
 
   useEffect(() => {
     setHeroLoaded(true);
@@ -303,6 +306,89 @@ export default function Home() {
     if (!isloggedin || !currentUser) { toast.error('Please login to dislike'); router.push('/login'); return; }
     try { await axios.post(api.comment.dislike(commentId), { userEmail: currentUser.email }); await backendcall(); }
     catch (error) { console.error('Error disliking comment:', error); toast.error('Failed to dislike comment'); }
+  };
+
+  const toggleReply = (commentId) => {
+    setReplyOpen(prev => ({ ...prev, [commentId]: !prev[commentId] }));
+  };
+
+  const handleReplyTextChange = (commentId, text) => {
+    setReplyTexts(prev => ({ ...prev, [commentId]: text }));
+  };
+
+  const handleReplySubmit = async (commentId) => {
+    if (!isloggedin || !currentUser) {
+      toast.error('Please login to reply');
+      router.push('/login');
+      return;
+    }
+    const text = replyTexts[commentId]?.trim();
+    if (!text) {
+      toast.error('Please enter a reply');
+      return;
+    }
+    try {
+      setSubmittingReply(prev => ({ ...prev, [commentId]: true }));
+      const response = await axios.post(api.comment.reply(commentId), {
+        comment: text,
+        userEmail: currentUser.email,
+        userName: currentUser.name || currentUser.firstname || currentUser.email.split('@')[0],
+        userAvatar: currentUser.avatar || ''
+      });
+      if (response.data && response.data.success !== false) {
+        toast.success('Reply posted!');
+        setReplyTexts(prev => ({ ...prev, [commentId]: '' }));
+        await backendcall();
+      } else {
+        toast.error(response.data?.message || 'Failed to post reply');
+      }
+    } catch (error) {
+      console.error('Error posting reply:', error);
+      toast.error(error.response?.data?.message || 'Failed to post reply');
+    } finally {
+      setSubmittingReply(prev => ({ ...prev, [commentId]: false }));
+    }
+  };
+
+  const handleLikeReply = async (commentId, replyId) => {
+    if (!isloggedin || !currentUser) {
+      toast.error('Please login to like');
+      router.push('/login');
+      return;
+    }
+    try {
+      await axios.post(api.comment.likeReply(commentId, replyId), {
+        userEmail: currentUser.email
+      });
+      await backendcall();
+    } catch (error) {
+      console.error('Error liking reply:', error);
+      toast.error('Failed to like reply');
+    }
+  };
+
+  const handleShareComment = async (item) => {
+    const url = `${window.location.origin}/comment/${item._id}?type=before`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Comment by ${item.userName || 'Visitor'}`,
+          text: item.comment,
+          url: url
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error(err);
+      }
+    } else {
+      await navigator.clipboard.writeText(url);
+      toast.success('Comment link copied to clipboard!');
+    }
+    try {
+      await axios.post(api.comment.share(item._id));
+      await backendcall();
+    } catch (e) {
+      // silent
+    }
   };
 
   const visibleComments = expandedComments ? data : data.slice(0, 1);
@@ -732,24 +818,132 @@ export default function Home() {
                     {item.createdAt && (
                       <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-gray-200">
                         <div className="flex items-center gap-1.5 text-xs text-gray-600">
-                          <User size={12} className="text-blue-600" />
-                          {item.userName || item.userEmail?.split('@')[0] || "Anonymous"}
+                          {item.userAvatar ? (
+                            <img src={item.userAvatar} alt="" className="w-4 h-4 rounded-full object-cover" />
+                          ) : (
+                            <User size={12} className="text-blue-600" />
+                          )}
+                          <span className="font-medium">{item.userName || item.userEmail?.split('@')[0] || "Anonymous"}</span>
                         </div>
                         <button
                           onClick={() => handleLike(item._id)}
-                          className="flex items-center gap-1 text-xs text-gray-600 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                          className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-md ${
+                            currentUser && item.likes?.includes(currentUser.email)
+                              ? "text-blue-600 bg-blue-50 font-medium"
+                              : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
+                          }`}
+                          title="Like comment"
                         >
                           <ThumbsUp size={12} fill={currentUser && item.likes?.includes(currentUser.email) ? "currentColor" : "none"} />
                           {item.likes?.length || 0}
                         </button>
                         <button
                           onClick={() => handleDislike(item._id)}
-                          className="flex items-center gap-1 text-xs text-gray-600 hover:text-red-400 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                          className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-md ${
+                            currentUser && item.dislikes?.includes(currentUser.email)
+                              ? "text-red-600 bg-red-50 font-medium"
+                              : "text-gray-600 hover:text-red-500 hover:bg-gray-100"
+                          }`}
+                          title="Dislike comment"
                         >
                           <ThumbsDown size={12} fill={currentUser && item.dislikes?.includes(currentUser.email) ? "currentColor" : "none"} />
                           {item.dislikes?.length || 0}
                         </button>
+                        <button
+                          onClick={() => toggleReply(item._id)}
+                          className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-md ${
+                            replyOpen[item._id]
+                              ? "text-blue-600 bg-blue-50 font-medium"
+                              : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
+                          }`}
+                          title="Reply to comment"
+                        >
+                          <MessageCircle size={12} />
+                          <span>Reply {item.replies?.length > 0 ? `(${item.replies.length})` : ''}</span>
+                        </button>
+                        <button
+                          onClick={() => handleShareComment(item)}
+                          className="flex items-center gap-1 text-xs text-gray-600 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                          title="Share comment"
+                        >
+                          <Share2 size={12} />
+                          <span>Share {item.shares > 0 ? `(${item.shares})` : ''}</span>
+                        </button>
                         <span className="ml-auto text-xs text-gray-500">{formatCommentDate(item.createdAt)}</span>
+                      </div>
+                    )}
+
+                    {/* Replies list and reply input */}
+                    {replyOpen[item._id] && (
+                      <div className="mt-4 pt-3 border-t border-gray-100 space-y-3">
+                        {item.replies && item.replies.length > 0 && (
+                          <div className="space-y-2.5">
+                            {item.replies.map((reply) => (
+                              <div
+                                key={reply._id}
+                                className="flex gap-2.5 pl-3 border-l-2 border-blue-500/40 bg-gray-50/70 rounded-r-lg p-2.5"
+                              >
+                                <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 text-xs font-semibold overflow-hidden">
+                                  {reply.userAvatar ? (
+                                    <img src={reply.userAvatar} alt="" className="w-full h-full object-cover" />
+                                  ) : (
+                                    reply.userName ? reply.userName.charAt(0).toUpperCase() : <User size={12} />
+                                  )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex items-center justify-between gap-2">
+                                    <span className="text-xs font-medium text-gray-800 truncate">
+                                      {reply.userName || reply.userEmail?.split('@')[0] || "Anonymous"}
+                                    </span>
+                                    <span className="text-[10px] text-gray-400">
+                                      {formatCommentDate(reply.createdAt)}
+                                    </span>
+                                  </div>
+                                  <p className="text-xs text-gray-700 mt-1 whitespace-pre-wrap leading-relaxed">
+                                    {reply.comment}
+                                  </p>
+                                  <div className="mt-1.5 flex items-center gap-2">
+                                    <button
+                                      onClick={() => handleLikeReply(item._id, reply._id)}
+                                      className={`inline-flex items-center gap-1 text-[11px] px-1.5 py-0.5 rounded transition-colors ${
+                                        currentUser && reply.likes?.includes(currentUser.email)
+                                          ? "text-blue-600 bg-blue-100/60 font-medium"
+                                          : "text-gray-500 hover:text-blue-600 hover:bg-gray-100"
+                                      }`}
+                                    >
+                                      <ThumbsUp size={11} fill={currentUser && reply.likes?.includes(currentUser.email) ? "currentColor" : "none"} />
+                                      <span>{reply.likes?.length || 0}</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Inline Reply input */}
+                        <div className="flex gap-2 items-center pt-1">
+                          <input
+                            type="text"
+                            placeholder="Write a reply..."
+                            value={replyTexts[item._id] || ''}
+                            onChange={(e) => handleReplyTextChange(item._id, e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                handleReplySubmit(item._id);
+                              }
+                            }}
+                            className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                          />
+                          <button
+                            onClick={() => handleReplySubmit(item._id)}
+                            disabled={submittingReply[item._id]}
+                            className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 transition-colors flex items-center gap-1"
+                          >
+                            {submittingReply[item._id] ? 'Posting...' : <><Send size={11} /> Reply</>}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </motion.div>

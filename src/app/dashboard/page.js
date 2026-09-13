@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { api } from '@/lib/api';
-import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity } from 'lucide-react';
+import { Calendar, User, BookOpen, MessageCircle, Send, Heart, Clock, TrendingUp, ChevronDown, ChevronUp, LogOut, RefreshCw, ArrowRight, Sparkles, Zap, Activity, ThumbsUp, Share2 } from 'lucide-react';
 import Link from 'next/link';
+import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import DashboardShell, { DashCard, DashboardLoader } from '@/components/DashboardShell';
@@ -100,8 +101,12 @@ export default function ArticleDisplay() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState('');
     const [userEmail, setUserEmail] = useState('');
+    const [userAvatar, setUserAvatar] = useState('');
     const [greeting, setGreeting] = useState('');
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const [replyOpen, setReplyOpen] = useState({});
+    const [replyTexts, setReplyTexts] = useState({});
+    const [submittingReply, setSubmittingReply] = useState({});
     const commentRef = useRef(null);
 
     useEffect(() => {
@@ -138,6 +143,7 @@ export default function ArticleDisplay() {
                     const userData = JSON.parse(user);
                     setUserName(userData.name || userData.firstname || userData.email || 'User');
                     setUserEmail(userData.email || '');
+                    setUserAvatar(userData.avatar || '');
                 } catch {
                     setUserName('User');
                 }
@@ -179,18 +185,101 @@ export default function ArticleDisplay() {
 
     const handleSubmitComment = async (e) => {
         e.preventDefault();
-        if (!isLoggedIn) { alert('Please login to post a comment'); router.push('/login'); return; }
-        if (!newComment.trim()) { alert('Please enter a comment'); return; }
+        if (!isLoggedIn) { toast.error('Please login to post a comment'); router.push('/login'); return; }
+        if (!newComment.trim()) { toast.error('Please enter a comment'); return; }
         try {
             setSubmitting(true);
-            await axios.post(api.comment.afterlogincomment, { comment: newComment.trim(), user: userName });
+            await axios.post(api.comment.afterlogincomment, { 
+                comment: newComment.trim(), 
+                user: userName,
+                userEmail,
+                userAvatar
+            });
+            toast.success('Comment posted!');
             setNewComment('');
             afterlogindisplaycomment();
         } catch (error) {
             console.error('Error posting comment:', error);
-            alert('Failed to post comment');
+            toast.error('Failed to post comment');
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    const handleLikeComment = async (commentId) => {
+        if (!isLoggedIn) {
+            toast.error('Please login to like');
+            router.push('/login');
+            return;
+        }
+        try {
+            await axios.post(api.comment.afterloginLike(commentId), { userEmail });
+            await afterlogindisplaycomment();
+        } catch (error) {
+            console.error('Error liking comment:', error);
+            toast.error('Failed to like comment');
+        }
+    };
+
+    const toggleReply = (commentId) => {
+        setReplyOpen(prev => ({ ...prev, [commentId]: !prev[commentId] }));
+    };
+
+    const handleReplyTextChange = (commentId, text) => {
+        setReplyTexts(prev => ({ ...prev, [commentId]: text }));
+    };
+
+    const handleReplySubmit = async (commentId) => {
+        if (!isLoggedIn) {
+            toast.error('Please login to reply');
+            router.push('/login');
+            return;
+        }
+        const text = replyTexts[commentId]?.trim();
+        if (!text) {
+            toast.error('Please enter a reply');
+            return;
+        }
+        try {
+            setSubmittingReply(prev => ({ ...prev, [commentId]: true }));
+            await axios.post(api.comment.afterloginReply(commentId), {
+                comment: text,
+                userEmail,
+                userName,
+                userAvatar
+            });
+            toast.success('Reply posted!');
+            setReplyTexts(prev => ({ ...prev, [commentId]: '' }));
+            await afterlogindisplaycomment();
+        } catch (error) {
+            console.error('Error posting reply:', error);
+            toast.error('Failed to post reply');
+        } finally {
+            setSubmittingReply(prev => ({ ...prev, [commentId]: false }));
+        }
+    };
+
+    const handleShareComment = async (comment) => {
+        const url = `${window.location.origin}/comment/${comment._id}?type=after`;
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: `Comment by ${comment.user || 'User'}`,
+                    text: comment.comment,
+                    url: url
+                });
+            } catch (err) {
+                if (err.name !== 'AbortError') console.error(err);
+            }
+        } else {
+            await navigator.clipboard.writeText(url);
+            toast.success('Comment link copied to clipboard!');
+        }
+        try {
+            await axios.post(api.comment.afterloginShare(comment._id));
+            await afterlogindisplaycomment();
+        } catch (e) {
+            // silent
         }
     };
 
@@ -572,19 +661,122 @@ export default function ArticleDisplay() {
                                     <motion.div
                                         key={comment._id || `comment-${index}`}
                                         variants={fadeUp}
-                                        whileHover={{ x: 4 }}
+                                        whileHover={{ x: 2 }}
                                         className="p-4 bg-gray-50 rounded-xl border border-gray-100 hover:border-blue-100 transition-all"
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0">
-                                                {commentUser.charAt(0).toUpperCase()}
+                                            <div className="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm flex-shrink-0 overflow-hidden">
+                                                {comment.userAvatar ? (
+                                                    <img src={comment.userAvatar} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                    commentUser.charAt(0).toUpperCase()
+                                                )}
                                             </div>
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <span className="font-semibold text-gray-900 text-sm">{commentUser}</span>
                                                     <span className="text-gray-400 text-xs">{commentDate}</span>
                                                 </div>
-                                                <p className="text-gray-700 text-sm">{commentText}</p>
+                                                <p className="text-gray-700 text-sm whitespace-pre-wrap">{commentText}</p>
+
+                                                {/* Action buttons: Like, Reply, Share */}
+                                                <div className="flex items-center gap-2 mt-3 pt-2 border-t border-gray-200/60">
+                                                    <button
+                                                        onClick={() => handleLikeComment(comment._id)}
+                                                        className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-md ${
+                                                            userEmail && Array.isArray(comment.likes) && comment.likes.includes(userEmail)
+                                                                ? "text-blue-600 bg-blue-50 font-medium"
+                                                                : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
+                                                        }`}
+                                                        title="Like comment"
+                                                    >
+                                                        <ThumbsUp size={12} fill={userEmail && Array.isArray(comment.likes) && comment.likes.includes(userEmail) ? "currentColor" : "none"} />
+                                                        <span>{comment.likes?.length || 0}</span>
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => toggleReply(comment._id)}
+                                                        className={`flex items-center gap-1 text-xs transition-colors px-2 py-1 rounded-md ${
+                                                            replyOpen[comment._id]
+                                                                ? "text-blue-600 bg-blue-50 font-medium"
+                                                                : "text-gray-600 hover:text-blue-600 hover:bg-gray-100"
+                                                        }`}
+                                                        title="Reply to comment"
+                                                    >
+                                                        <MessageCircle size={12} />
+                                                        <span>Reply {comment.replies?.length > 0 ? `(${comment.replies.length})` : ''}</span>
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handleShareComment(comment)}
+                                                        className="flex items-center gap-1 text-xs text-gray-600 hover:text-blue-600 transition-colors px-2 py-1 rounded-md hover:bg-gray-100"
+                                                        title="Share comment"
+                                                    >
+                                                        <Share2 size={12} />
+                                                        <span>Share {comment.shares > 0 ? `(${comment.shares})` : ''}</span>
+                                                    </button>
+                                                </div>
+
+                                                {/* Replies Thread */}
+                                                {replyOpen[comment._id] && (
+                                                    <div className="mt-3 pt-3 border-t border-gray-200/60 space-y-3">
+                                                        {comment.replies && comment.replies.length > 0 && (
+                                                            <div className="space-y-2">
+                                                                {comment.replies.map((reply, rIdx) => (
+                                                                    <div
+                                                                        key={reply._id || `reply-${rIdx}`}
+                                                                        className="flex gap-2.5 pl-3 border-l-2 border-blue-500/40 bg-white rounded-r-lg p-2.5 border border-gray-100"
+                                                                    >
+                                                                        <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0 text-xs font-semibold overflow-hidden">
+                                                                            {reply.userAvatar ? (
+                                                                                <img src={reply.userAvatar} alt="" className="w-full h-full object-cover" />
+                                                                            ) : (
+                                                                                reply.userName ? reply.userName.charAt(0).toUpperCase() : <User size={12} />
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <div className="flex items-center justify-between gap-2">
+                                                                                <span className="text-xs font-medium text-gray-800 truncate">
+                                                                                    {reply.userName || reply.userEmail?.split('@')[0] || "Anonymous"}
+                                                                                </span>
+                                                                                <span className="text-[10px] text-gray-400">
+                                                                                    {formatCommentDate(reply.createdAt)}
+                                                                                </span>
+                                                                            </div>
+                                                                            <p className="text-xs text-gray-700 mt-1 whitespace-pre-wrap leading-relaxed">
+                                                                                {reply.comment}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Inline Reply Input */}
+                                                        <div className="flex gap-2 items-center pt-1">
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Write a reply..."
+                                                                value={replyTexts[comment._id] || ''}
+                                                                onChange={(e) => handleReplyTextChange(comment._id, e.target.value)}
+                                                                onKeyDown={(e) => {
+                                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                                        e.preventDefault();
+                                                                        handleReplySubmit(comment._id);
+                                                                    }
+                                                                }}
+                                                                className="flex-1 text-xs px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                                                            />
+                                                            <button
+                                                                onClick={() => handleReplySubmit(comment._id)}
+                                                                disabled={submittingReply[comment._id]}
+                                                                className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50 transition-colors flex items-center gap-1"
+                                                            >
+                                                                {submittingReply[comment._id] ? 'Posting...' : <><Send size={11} /> Reply</>}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </motion.div>
